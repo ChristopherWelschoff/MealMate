@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Category from "./categories";
+import "./Category";
 
 const { Schema } = mongoose;
 
@@ -28,8 +28,8 @@ const recipeSchema = new Schema(
     },
 
     category: {
-      type: Schema.Types.ObjectId,
-      ref: Category,
+      type: [Schema.Types.ObjectId],
+      ref: "Category",
       required: true,
     },
 
