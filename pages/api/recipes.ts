@@ -15,6 +15,8 @@ export default async function handler(
   try {
     await dbConnect();
 
+    console.log("SCHEMA:", Object.keys(Recipe.schema.paths));
+
     const recipes = await Recipe.find().populate("category");
 
     return res.status(200).json(recipes);
