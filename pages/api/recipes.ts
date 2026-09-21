@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "@/db/connect";
-import Recipe from "@/db/schemas/recipes";
+import Recipe from "@/db/schemas/Recipe";
 
 export default async function handler(
   req: NextApiRequest,
@@ -15,9 +15,10 @@ export default async function handler(
   try {
     await dbConnect();
 
-    console.log("SCHEMA:", Object.keys(Recipe.schema.paths));
-
-    const recipes = await Recipe.find().populate("category");
+    const recipes = await Recipe.find().populate({
+      path: "category",
+      model: "Category",
+    });
 
     return res.status(200).json(recipes);
   } catch (error) {

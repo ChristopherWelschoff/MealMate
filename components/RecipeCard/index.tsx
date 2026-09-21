@@ -29,13 +29,12 @@ export default function RecipeCard({
     return <p>Error Loading Recipes</p>;
   }
 
-  console.log(recipe);
-
   return (
     <Card className="relative mx-auto w-full max-w-sm overflow-hidden pt-0">
       <div className="relative aspect-video">
         <Image
-          src={recipe.imageUrl || "/assets/placeholder.jpg"}
+          loading="eager"
+          src="/assets/placeholder.jpg"
           alt={recipe.title}
           fill
           className="object-cover"
@@ -43,8 +42,16 @@ export default function RecipeCard({
       </div>
 
       <CardHeader>
-        <CardAction>
-          <Badge variant="secondary">{recipe.category.name}</Badge>
+        <CardAction className="flex flex-wrap gap-2">
+          {recipe.category.map((category: { _id: string; name: string }) => (
+            <Badge
+              key={category._id}
+              variant="outline"
+              className="border-gray-300 bg-gray-100 text-gray-900"
+            >
+              {category.name}
+            </Badge>
+          ))}
         </CardAction>
 
         <CardTitle>{recipe.title}</CardTitle>
