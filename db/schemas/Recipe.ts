@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
+import "./Category";
 
-const recipeSchema = new mongoose.Schema(
+const { Schema } = mongoose;
+
+const recipeSchema = new Schema(
   {
     title: {
       type: String,
@@ -25,9 +28,9 @@ const recipeSchema = new mongoose.Schema(
     },
 
     category: {
-      type: String,
+      type: [Schema.Types.ObjectId],
+      ref: "Category",
       required: true,
-      trim: true,
     },
 
     imageUrl: {
@@ -47,4 +50,7 @@ const recipeSchema = new mongoose.Schema(
   },
 );
 
-export default mongoose.models.Recipe || mongoose.model("Recipe", recipeSchema);
+const Recipe =
+  mongoose.models.Recipe || mongoose.model("Recipe", recipeSchema, "recipes");
+
+export default Recipe;
