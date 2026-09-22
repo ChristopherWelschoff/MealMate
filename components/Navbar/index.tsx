@@ -20,7 +20,7 @@ export default function Navbar() {
       </Link>
 
       <div className="flex flex-col items-center">
-        <Link href="/recipe/createRecipe">
+        <Link href="/createRecipe">
           <Plus
             className={
               isActive("/recipe/createRecipe")

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import "./Category";
+import { Category } from "@/types";
 
 const { Schema } = mongoose;
 
@@ -13,8 +14,8 @@ const recipeSchema = new Schema(
 
     description: {
       type: String,
-      required: true,
-      trim: true,
+      required: false,
+      trim: false,
     },
 
     ingredients: {
@@ -24,13 +25,17 @@ const recipeSchema = new Schema(
 
     instructions: {
       type: [String],
-      required: true,
+      required: false,
     },
 
     category: {
       type: [Schema.Types.ObjectId],
       ref: "Category",
       required: true,
+      validate: {
+        validator: (arr: Category[]) => arr.length > 0,
+        message: "At least one category is required",
+      },
     },
 
     imageUrl: {
