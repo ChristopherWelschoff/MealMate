@@ -49,7 +49,7 @@ export default function RecipeCard({
               <Badge
                 key={category._id}
                 variant="outline"
-                className={`border-gray-300 ${categoryColors[category.name] ?? "bg-gray-100 text-gray-900"}`}
+                className={`border-gray-300 ${categoryColors[category.name.toLowerCase()] ?? "bg-gray-100 text-gray-900"}`}
               >
                 {category.name}
               </Badge>
