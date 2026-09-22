@@ -4,6 +4,7 @@ import Layout from "@/components/Layout";
 import { useRouter } from "next/router";
 import useSWR, { SWRConfig } from "swr";
 import type { Recipe } from "@/types";
+import { createFetch } from "next/dist/client/components/router-reducer/fetch-server-response";
 
 const fetcher = async (url: string) => {
   const response = await fetch(url);
@@ -31,7 +32,6 @@ export default function App({ Component, pageProps }: AppProps) {
     error,
     isLoading,
   } = useSWR<Recipe[]>("/api/recipes", fetcher);
-
 
   const router = useRouter();
   const isHome = router.pathname === "/";

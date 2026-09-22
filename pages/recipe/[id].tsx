@@ -12,13 +12,13 @@ import {
 } from "@/components/ui/card";
 import Image from "next/image";
 import { categoryColors } from "@/lib/utils";
+import Link from "next/link";
 
 export default function RecipeDetails({ recipes }: { recipes: Recipe[] }) {
   const router = useRouter();
   const { id } = router.query;
 
   const recipe = recipes?.find((recipe) => recipe._id === id);
-  
 
   if (!recipe) {
     return <p>Recipe not found.</p>;
@@ -96,7 +96,9 @@ export default function RecipeDetails({ recipes }: { recipes: Recipe[] }) {
       </CardHeader>
 
       <CardFooter>
-        <Button className="w-full bg-bg-button">Back</Button>
+        <Link className="w-full" href="../landingPage">
+          <Button className="w-full bg-accent">Back</Button>
+        </Link>
       </CardFooter>
     </Card>
   );
