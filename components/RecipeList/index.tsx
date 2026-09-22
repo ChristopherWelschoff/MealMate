@@ -12,15 +12,22 @@ export default function RecipeList({
   error,
   isLoading,
 }: RecipeListProps) {
+  if (isLoading) {
+    return <p>Loading recipes...</p>;
+  }
+
+  if (error) {
+    <p>Error loading recipes.</p>;
+  }
+
+  if (!recipes) {
+    <p>No recipes found.</p>;
+  }
+
   return (
     <div>
       {recipes?.map((recipe) => (
-        <RecipeCard
-          key={recipe._id}
-          {...recipe}
-          error={error}
-          isLoading={isLoading}
-        />
+        <RecipeCard key={recipe._id} {...recipe} />
       ))}
     </div>
   );
