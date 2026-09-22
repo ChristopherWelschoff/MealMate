@@ -13,7 +13,7 @@ export default function Navbar() {
             className={
               isActive("/landingPage")
                 ? "fill-green-900 stroke-black"
-                : "stroke-white"
+                : "stroke-gray-500"
             }
           />
         </div>
