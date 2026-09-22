@@ -20,10 +20,23 @@ export default function Navbar() {
       </Link>
 
       <div className="flex flex-col items-center">
-        <Plus className="stroke-gray-500" />
+        <Link href="/recipe/createRecipe">
+          <Plus
+            className={
+              isActive("/recipe/createRecipe")
+                ? "fill-green-900 stroke-black"
+                : "stroke-gray-500"
+            }
+          />
+        </Link>
       </div>
+
       <div className="flex flex-col items-center">
-        <Heart className="stroke-gray-500" />
+        <Heart
+          className={
+            isActive("") ? "fill-green-900 stroke-black" : "stroke-gray-500"
+          }
+        />
       </div>
     </nav>
   );

@@ -9,15 +9,41 @@ export default async function handler(
   await dbConnect();
 
   if (req.method === "GET") {
-    const recipes = await Recipe.find().populate({
-      path: "category",
-      model: "Category",
-    });
+    try {
+      const recipes = await Recipe.find().populate({
+        path: "category",
+        model: "Category",
+      });
 
-    return res.status(200).json(recipes);
-  } else {
-    return res.status(405).json({
-      message: "Method not allowed",
-    });
+      return res.status(200).json(recipes);
+    } catch (error) {
+      console.log(error);
+
+      return res.status(400).json({
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+    }
   }
+
+  if (req.method === "POST") {
+    try {
+      const recipeData = req.body;
+
+      await Recipe.create(recipeData);
+
+      return res.status(201).json({
+        status: "Recipe created",
+      });
+    } catch (error) {
+      console.log(error);
+
+      return res.status(400).json({
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+    }
+  }
+
+  return res.status(405).json({
+    message: "Method not allowed",
+  });
 }
