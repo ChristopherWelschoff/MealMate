@@ -10,7 +10,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 
       <main className="w-full flex-1">{children}</main>
 
-      <footer className="w-full">
+      <footer className="w-full  sticky bottom-0">
         <Navbar />
       </footer>
     </div>
