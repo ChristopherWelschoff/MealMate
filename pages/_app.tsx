@@ -31,6 +31,7 @@ export default function App({ Component, pageProps }: AppProps) {
     error,
     isLoading,
   } = useSWR<Recipe[]>("/api/recipes", fetcher);
+  const { data: categories } = useSWR<Recipe[]>("/api/categories", fetcher);
 
   const router = useRouter();
   const isHome = router.pathname === "/";
@@ -44,6 +45,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <Layout>
         <Component
           recipes={recipes}
+          categories={categories}
           error={error}
           isLoading={isLoading}
           {...pageProps}

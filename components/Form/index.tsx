@@ -1,15 +1,17 @@
-import type { Recipe } from "@/types";
+import type { Category, Recipe } from "@/types";
+import React, { useState } from "react";
+import Select from "react-select";
 
-export type RecipeFormData = Omit<
-  Recipe,
-  "_id" | "createdAt" | "updatedAt" | "category"
->;
+export type RecipeFormData = Omit<Recipe, "_id" | "createdAt" | "updatedAt">;
 
 type RecipeFormProps = {
   onSubmit: (data: RecipeFormData) => Promise<void>;
+  categories: Category[];
 };
 
-export default function RecipeForm({ onSubmit }: RecipeFormProps) {
+export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
+  const [category, setCategory] = useState<Category[]>([]);
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -18,6 +20,7 @@ export default function RecipeForm({ onSubmit }: RecipeFormProps) {
     const data: RecipeFormData = {
       title: formData.get("title") as string,
       description: formData.get("description") as string,
+      category,
       ingredients: formData.getAll("ingredients") as string[],
       instructions: formData.getAll("instructions") as string[],
       duration: Number(formData.get("duration")),
@@ -61,6 +64,21 @@ export default function RecipeForm({ onSubmit }: RecipeFormProps) {
           placeholder="Recipe description"
         />
       </div>
+
+      <Select
+        isMulti
+        id="category"
+        name="category"
+        className="basic-multi-select"
+        classNamePrefix="select"
+        options={categories}
+        getOptionLabel={(category) => category.name}
+        getOptionValue={(category) => category._id}
+        value={category}
+        onChange={(selected) => setCategory([...selected])}
+        placeholder="Please Select a Category"
+        isOptionDisabled={() => category.length >= 2}
+      />
 
       <div>
         <label className="mb-1 block font-medium">Ingredients</label>
