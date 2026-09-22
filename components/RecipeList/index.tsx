@@ -17,11 +17,11 @@ export default function RecipeList({
   }
 
   if (error) {
-    <p>Error loading recipes.</p>;
+    return <p>Error loading recipes.</p>;
   }
 
   if (!recipes) {
-    <p>No recipes found.</p>;
+    return <p>No recipes found.</p>;
   }
 
   return (
