@@ -5,24 +5,7 @@ import Image from "next/image";
 import { Timer } from "lucide-react";
 import { categoryColors } from "@/lib/utils";
 
-type RecipeCardProps = Recipe & {
-  error: boolean;
-  isLoading: boolean;
-};
-
-export default function RecipeCard({
-  isLoading,
-  error,
-  ...recipe
-}: RecipeCardProps) {
-  if (isLoading) {
-    return <p>Loading Recipes...</p>;
-  }
-
-  if (error) {
-    return <p>Error Loading Recipes</p>;
-  }
-
+export default function RecipeCard({ ...recipe }: Recipe) {
   return (
     <Card
       size="sm"
