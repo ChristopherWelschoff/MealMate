@@ -6,7 +6,7 @@ export default function Navbar() {
 
   const isActive = (href: string) => router.pathname === href;
   return (
-    <div className=" flex justify-evenly w-full border-t-3 p-3 mt-9 bg-white">
+    <nav className=" flex justify-evenly w-full border-t-3 p-3 mt-9 bg-white">
       <Link href="/landingPage">
         <div className="flex flex-col items-center">
           <Leaf
@@ -25,6 +25,6 @@ export default function Navbar() {
       <div className="flex flex-col items-center">
         <Heart className="stroke-gray-500" />
       </div>
-    </div>
+    </nav>
   );
 }
