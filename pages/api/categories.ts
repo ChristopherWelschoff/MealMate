@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "@/db/connect";
-import Recipe from "@/db/schemas/Recipe";
+import Category from "@/db/schemas/Category";
 
 export default async function handler(
   req: NextApiRequest,
@@ -9,12 +9,9 @@ export default async function handler(
   await dbConnect();
 
   if (req.method === "GET") {
-    const recipes = await Recipe.find().populate({
-      path: "category",
-      model: "Category",
-    });
+    const categories = await Category.find();
 
-    return res.status(200).json(recipes);
+    return res.status(200).json(categories);
   } else {
     return res.status(405).json({
       message: "Method not allowed",

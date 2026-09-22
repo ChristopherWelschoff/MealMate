@@ -7,6 +7,7 @@ import { categoryColors } from "@/lib/utils";
 import Link from "next/link";
 
 export default function RecipeCard({ ...recipe }: Recipe) {
+  
   return (
     <Link href={`recipe/${recipe._id}`}>
       <Card

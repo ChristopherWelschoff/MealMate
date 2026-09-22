@@ -18,6 +18,7 @@ export default function RecipeDetails({ recipes }: { recipes: Recipe[] }) {
   const { id } = router.query;
 
   const recipe = recipes?.find((recipe) => recipe._id === id);
+  
 
   if (!recipe) {
     return <p>Recipe not found.</p>;

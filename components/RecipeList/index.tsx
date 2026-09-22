@@ -25,7 +25,7 @@ export default function RecipeList({
   }
 
   return (
-    <div>
+    <div className="flex flex-col gap-3">
       {recipes?.map((recipe) => (
         <RecipeCard key={recipe._id} {...recipe} />
       ))}
