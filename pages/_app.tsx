@@ -13,7 +13,6 @@ export default function App({ Component, pageProps }: AppProps) {
     error,
     isLoading,
   } = useSWR<Recipe[]>("/api/recipes", fetcher);
-  console.log(recipes);
   const router = useRouter();
   const isHome = router.pathname === "/";
 
