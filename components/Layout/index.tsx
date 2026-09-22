@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Navbar from "../Navbar";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
@@ -9,7 +10,9 @@ export default function Layout({ children }: { children: ReactNode }) {
 
       <main className="w-full flex-1">{children}</main>
 
-      <footer className="w-full">Navbar</footer>
+      <footer className="w-full">
+        <Navbar />
+      </footer>
     </div>
   );
 }

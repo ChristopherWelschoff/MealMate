@@ -1,18 +1,18 @@
 import { Recipe } from "@/types";
 import { useRouter } from "next/router";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import {
   Card,
   CardAction,
   CardDescription,
-  CardFooter,
+  // CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import Image from "next/image";
 import { categoryColors } from "@/lib/utils";
-import Link from "next/link";
+// import Link from "next/link";
 export default function RecipeDetails({ recipes }: { recipes: Recipe[] }) {
   const router = useRouter();
   const { id } = router.query;
@@ -90,13 +90,18 @@ export default function RecipeDetails({ recipes }: { recipes: Recipe[] }) {
           </section>
         </div>
       </CardHeader>
-      <CardFooter className="border-t border-gray-100 bg-gray-50 p-4">
+
+
+      {/* IDK IF I USE THE FOOTER STAYS HERE TILL I DECIDE */}
+
+
+      {/* <CardFooter className="border-t border-gray-100 bg-gray-50 p-4">
         <Link className="w-full" href="../landingPage">
           <Button className="w-full bg-accent text-white shadow-sm transition-transform duration-200 hover:scale-[1.02] hover:bg-accent hover:shadow-md">
             Back
           </Button>
         </Link>
-      </CardFooter>
+      </CardFooter> */}
     </Card>
   );
 }
