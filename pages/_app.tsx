@@ -2,10 +2,29 @@ import type { AppProps } from "next/app";
 import "@/styles/globals.css";
 import Layout from "@/components/Layout";
 import { useRouter } from "next/router";
-import useSWR from "swr";
+import useSWR, { SWRConfig } from "swr";
 import type { Recipe } from "@/types";
+import { createFetch } from "next/dist/client/components/router-reducer/fetch-server-response";
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = async (url: string) => {
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    const error = new Error(
+      "An error occurred while fetching the data.",
+    ) as Error & {
+      info?: unknown;
+      status?: number;
+    };
+
+    error.info = await response.json();
+    error.status = response.status;
+
+    throw error;
+  }
+
+  return response.json();
+};
 
 export default function App({ Component, pageProps }: AppProps) {
   const {
@@ -13,6 +32,7 @@ export default function App({ Component, pageProps }: AppProps) {
     error,
     isLoading,
   } = useSWR<Recipe[]>("/api/recipes", fetcher);
+
   const router = useRouter();
   const isHome = router.pathname === "/";
 
@@ -21,7 +41,7 @@ export default function App({ Component, pageProps }: AppProps) {
   }
 
   return (
-    <>
+    <SWRConfig value={{ fetcher }}>
       <Layout>
         <Component
           recipes={recipes}
@@ -30,6 +50,6 @@ export default function App({ Component, pageProps }: AppProps) {
           {...pageProps}
         />
       </Layout>
-    </>
+    </SWRConfig>
   );
 }
