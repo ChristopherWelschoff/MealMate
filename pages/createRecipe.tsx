@@ -22,7 +22,7 @@ export default function CreateRecipe({
 
     if (response.ok) {
       await mutate("/api/recipes");
-      router.push("/");
+      router.push("/landingPage");
     }
   }
 
