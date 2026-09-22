@@ -1,15 +1,9 @@
 import type { Recipe } from "@/types";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardAction,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
+import { Timer } from "lucide-react";
+import { categoryColors } from "@/lib/utils";
 
 type RecipeCardProps = Recipe & {
   error: boolean;
@@ -30,8 +24,11 @@ export default function RecipeCard({
   }
 
   return (
-    <Card className="relative mx-auto w-full max-w-sm overflow-hidden pt-0">
-      <div className="relative aspect-video">
+    <Card
+      size="sm"
+      className="mx-auto grid w-[95%] max-w-3xl grid-cols-5 overflow-hidden p-0"
+    >
+      <div className="relative col-span-2 ">
         <Image
           loading="eager"
           src="/assets/placeholder.jpg"
@@ -41,31 +38,32 @@ export default function RecipeCard({
         />
       </div>
 
-      <CardHeader>
-        <CardAction className="flex flex-wrap gap-2">
-          {recipe.category.map((category: { _id: string; name: string }) => (
-            <Badge
-              key={category._id}
-              variant="outline"
-              className="border-gray-300 bg-gray-100 text-gray-900"
-            >
-              {category.name}
-            </Badge>
-          ))}
-        </CardAction>
+      <CardHeader className="col-span-3 flex flex-col items-start justify-start gap-6 p-3">
+        <div className="flex flex-col gap-3">
+          <CardTitle className="text-2xl font-bold leading-tight">
+            {recipe.title}
+          </CardTitle>
 
-        <CardTitle>{recipe.title}</CardTitle>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {recipe.category.map((category) => (
+              <Badge
+                key={category._id}
+                variant="outline"
+                className={`border-gray-300 ${categoryColors[category.name] ?? "bg-gray-100 text-gray-900"}`}
+              >
+                {category.name}
+              </Badge>
+            ))}
+          </div>
+        </div>
 
-        <CardDescription>{recipe.description}</CardDescription>
-
-        <CardDescription>
-          Zubereitungszeit: {recipe.duration} Minuten
-        </CardDescription>
+        <div className=" text-sm mt-5">
+          <div className="flex items-center justify-center gap-2 text-sm ">
+            <Timer size={16} className=" -translate-y-px" />
+            <span>{recipe.duration} min</span>
+          </div>
+        </div>
       </CardHeader>
-
-      <CardFooter>
-        <Button className="w-full">View Recipe</Button>
-      </CardFooter>
     </Card>
   );
 }
