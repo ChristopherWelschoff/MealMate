@@ -2,6 +2,7 @@ import type { Category, Recipe } from "@/types";
 import React, { useState } from "react";
 import Select from "react-select";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 export type RecipeFormData = Omit<Recipe, "_id" | "createdAt" | "updatedAt">;
 
@@ -237,6 +238,16 @@ export default function RecipeForm({
       >
         {recipe ? "Edit Recipe" : "Save Recipe"}
       </button>
+
+      {recipe ? (
+        <Link className="w-full" href={`/recipes/${recipe._id}`}>
+          <button className=" w-full rounded-md bg-accent p-2 font-medium text-white">
+            Back
+          </button>
+        </Link>
+      ) : (
+        ""
+      )}
     </form>
   );
 }
