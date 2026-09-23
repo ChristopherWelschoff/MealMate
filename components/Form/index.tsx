@@ -150,6 +150,7 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
             className="w-full rounded-md border p-2"
             placeholder="Ingredient 2"
             required
+            onBlur={(event) => handleBlur(event.target.value, "ingredients")}
           />
           {fieldError.ingredients && (
             <p className="text-sm text-red-500">This field is required</p>
