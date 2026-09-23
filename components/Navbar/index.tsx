@@ -1,4 +1,4 @@
-import { Leaf, Heart, Plus, PlusCircle } from "lucide-react";
+import { Leaf, Heart, PlusCircle } from "lucide-react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 export default function Navbar() {
