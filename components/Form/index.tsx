@@ -4,6 +4,7 @@ import Select from "react-select";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import IngredientsField from "../IngredientFields";
+import InstructionsField from "../InstructionsField";
 
 export type RecipeFormData = Omit<Recipe, "_id" | "createdAt" | "updatedAt">;
 
@@ -147,40 +148,11 @@ export default function RecipeForm({
         />
       </div>
 
-      <div>
-        <label className="mb-1 block font-medium">
-          Instructions* <small>(at least one)</small>
-        </label>
-
-        <input
-          name="instructions"
-          type="text"
-          className={` ${fieldError.instructions ? "border-red-500" : ""} w-full rounded-md border p-2`}
-          placeholder="Instruction 1"
-          required
-          onBlur={(event) => handleBlur(event.target.value, "instructions")}
-          defaultValue={recipe?.instructions[0]}
-        />
-        {fieldError.instructions && (
-          <p className="text-sm text-red-500">This field is required</p>
-        )}
-
-        <input
-          name="instructions"
-          type="text"
-          className="mt-2 w-full rounded-md border p-2"
-          placeholder="Instruction 2"
-          defaultValue={recipe?.instructions[1]}
-        />
-
-        <input
-          name="instructions"
-          type="text"
-          className="mt-2 w-full rounded-md border p-2"
-          placeholder="Instruction 3"
-          defaultValue={recipe?.instructions[2]}
-        />
-      </div>
+      <InstructionsField
+        hasError={fieldError.instructions}
+        onBlur={handleBlur}
+        initialInstructions={recipe?.instructions}
+      />
 
       <div>
         <label htmlFor="duration" className="mb-1 block font-medium">
