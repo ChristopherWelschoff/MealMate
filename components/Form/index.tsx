@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Select from "react-select";
 import { toast } from "react-toastify";
 import Link from "next/link";
+import IngredientsField from "../IngredientFields";
 
 export type RecipeFormData = Omit<Recipe, "_id" | "createdAt" | "updatedAt">;
 
@@ -20,6 +21,8 @@ export default function RecipeForm({
   const [category, setCategory] = useState<Category[]>(
     recipe ? recipe.category : [],
   );
+
+  // field error visualization
   const [fieldError, setFieldErrors] = useState({
     title: false,
     category: false,
@@ -27,6 +30,17 @@ export default function RecipeForm({
     instructions: false,
     duration: false,
   });
+  //dynamic inputfield Instructions / Ingredients
+  const [ingredientFields, setIngredientFields] = useState<number[]>(
+    Array.from(
+      { length: recipe?.ingredients?.length ?? 2 },
+      (_, index) => index,
+    ),
+  );
+
+  function addIngredientField() {
+    setIngredientFields([...ingredientFields, ingredientFields.length]);
+  }
 
   function handleBlur(value: string, field: string) {
     setFieldErrors({ ...fieldError, [field]: value.trim() === "" });
@@ -140,42 +154,11 @@ export default function RecipeForm({
         <label className="mb-1 block font-medium">
           Ingredients* <small>(at least two)</small>
         </label>
-
-        <div className="flex flex-col gap-2">
-          <input
-            name="ingredients"
-            type="text"
-            className={` ${fieldError.ingredients ? "border-red-500" : ""} w-full rounded-md border p-2`}
-            placeholder="Ingredient 1"
-            required
-            onBlur={(event) => handleBlur(event.target.value, "ingredients")}
-            defaultValue={recipe?.ingredients[0]}
-          />
-          {fieldError.ingredients && (
-            <p className="text-sm text-red-500">This field is required</p>
-          )}
-
-          <input
-            name="ingredients"
-            type="text"
-            className={` ${fieldError.ingredients ? "border-red-500" : ""} w-full rounded-md border p-2`}
-            placeholder="Ingredient 2"
-            required
-            onBlur={(event) => handleBlur(event.target.value, "ingredients")}
-            defaultValue={recipe?.ingredients[1]}
-          />
-          {fieldError.ingredients && (
-            <p className="text-sm text-red-500">This field is required</p>
-          )}
-
-          <input
-            name="ingredients"
-            type="text"
-            className="w-full rounded-md border p-2"
-            placeholder="Ingredient 3"
-            defaultValue={recipe?.ingredients[2]}
-          />
-        </div>
+        <IngredientsField
+          hasError={fieldError.ingredients}
+          onBlur={handleBlur}
+          initialIngredients={recipe?.ingredients}
+        />
       </div>
 
       <div>
