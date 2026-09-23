@@ -23,7 +23,7 @@ export default function Navbar() {
         <Link href="/createRecipe">
           <Plus
             className={
-              isActive("/recipe/createRecipe")
+              isActive("/recipes/createRecipe")
                 ? "fill-green-900 stroke-black"
                 : "stroke-gray-500"
             }

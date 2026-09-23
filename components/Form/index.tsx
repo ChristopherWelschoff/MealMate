@@ -8,10 +8,17 @@ export type RecipeFormData = Omit<Recipe, "_id" | "createdAt" | "updatedAt">;
 type RecipeFormProps = {
   onSubmit: (data: RecipeFormData) => Promise<void>;
   categories: Category[];
+  recipe?: Recipe;
 };
 
-export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
-  const [category, setCategory] = useState<Category[]>([]);
+export default function RecipeForm({
+  recipe,
+  onSubmit,
+  categories,
+}: RecipeFormProps) {
+  const [category, setCategory] = useState<Category[]>(
+    recipe ? recipe.category : [],
+  );
   const [fieldError, setFieldErrors] = useState({
     title: false,
     category: false,
@@ -82,6 +89,7 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
           className={` ${fieldError.title ? "border-red-500" : ""} w-full rounded-md border p-2`}
           placeholder="Recipe title"
           required
+          defaultValue={recipe?.title}
         />
         {fieldError.title && (
           <p className="text-sm text-red-500">This field is required</p>
@@ -99,6 +107,7 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
           className="w-full rounded-md border p-2"
           placeholder="Recipe description"
           maxLength={200}
+          defaultValue={recipe?.description}
         />
       </div>
       <label className="mb-1 block font-medium">
@@ -139,6 +148,7 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
             placeholder="Ingredient 1"
             required
             onBlur={(event) => handleBlur(event.target.value, "ingredients")}
+            defaultValue={recipe?.ingredients[0]}
           />
           {fieldError.ingredients && (
             <p className="text-sm text-red-500">This field is required</p>
@@ -151,6 +161,7 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
             placeholder="Ingredient 2"
             required
             onBlur={(event) => handleBlur(event.target.value, "ingredients")}
+            defaultValue={recipe?.ingredients[1]}
           />
           {fieldError.ingredients && (
             <p className="text-sm text-red-500">This field is required</p>
@@ -161,6 +172,7 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
             type="text"
             className="w-full rounded-md border p-2"
             placeholder="Ingredient 3"
+            defaultValue={recipe?.ingredients[2]}
           />
         </div>
       </div>
@@ -177,6 +189,7 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
           placeholder="Instruction 1"
           required
           onBlur={(event) => handleBlur(event.target.value, "instructions")}
+          defaultValue={recipe?.instructions[0]}
         />
         {fieldError.instructions && (
           <p className="text-sm text-red-500">This field is required</p>
@@ -187,6 +200,7 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
           type="text"
           className="mt-2 w-full rounded-md border p-2"
           placeholder="Instruction 2"
+          defaultValue={recipe?.instructions[1]}
         />
 
         <input
@@ -194,6 +208,7 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
           type="text"
           className="mt-2 w-full rounded-md border p-2"
           placeholder="Instruction 3"
+          defaultValue={recipe?.instructions[2]}
         />
       </div>
 
@@ -209,6 +224,7 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
           placeholder="30"
           required
           onBlur={(event) => handleBlur(event.target.value, "duration")}
+          defaultValue={recipe?.duration}
         />
         {fieldError.duration && (
           <p className="text-sm text-red-500">This field is required</p>
@@ -219,7 +235,7 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
         type="submit"
         className="rounded-md bg-accent p-2 font-medium text-white"
       >
-        Save Recipe
+        {recipe ? "Edit Recipe" : "Save Recipe"}
       </button>
     </form>
   );
