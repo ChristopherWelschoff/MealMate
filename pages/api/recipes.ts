@@ -10,7 +10,7 @@ export default async function handler(
 
   if (req.method === "GET") {
     try {
-      const recipes = await Recipe.find().populate({
+      const recipes = await Recipe.find().sort({ createdAt: -1 }).populate({
         path: "category",
         model: "Category",
       });

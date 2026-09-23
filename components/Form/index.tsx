@@ -40,7 +40,7 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
     >
       <div>
         <label htmlFor="title" className="mb-1 block font-medium">
-          Title
+          Title*
         </label>
         <input
           id="title"
@@ -62,10 +62,12 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
           name="description"
           className="w-full rounded-md border p-2"
           placeholder="Recipe description"
+          maxLength={200}
         />
       </div>
-
+      <label className="mb-1 block font-medium">Category*</label>
       <Select
+        instanceId="category-select"
         isMulti
         id="category"
         name="category"
@@ -81,7 +83,7 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
       />
 
       <div>
-        <label className="mb-1 block font-medium">Ingredients</label>
+        <label className="mb-1 block font-medium">Ingredients*</label>
 
         <div className="flex flex-col gap-2">
           <input
@@ -135,7 +137,7 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
 
       <div>
         <label htmlFor="duration" className="mb-1 block font-medium">
-          Duration
+          Duration*
         </label>
         <input
           id="duration"
