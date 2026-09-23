@@ -1,6 +1,7 @@
 import type { Category, Recipe } from "@/types";
 import React, { useState } from "react";
 import Select from "react-select";
+import { toast } from "react-toastify";
 
 export type RecipeFormData = Omit<Recipe, "_id" | "createdAt" | "updatedAt">;
 
@@ -17,6 +18,7 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
 
     const formData = new FormData(event.currentTarget);
 
+    //required Title,category, ingredients instructions and duration
     const data: RecipeFormData = {
       title: formData.get("title") as string,
       description: formData.get("description") as string,
@@ -25,6 +27,24 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
       instructions: formData.getAll("instructions") as string[],
       duration: Number(formData.get("duration")),
     };
+
+    function removeEmpty(value: string[]) {
+      return value.filter((value) => value.trim());
+    }
+
+    data.ingredients = removeEmpty(data.ingredients);
+    data.instructions = removeEmpty(data.instructions);
+
+    if (data.ingredients.length <= 1) {
+      return toast.error("Please select at least 2 Ingredients ");
+    }
+    if (data.instructions.length === 0) {
+      return toast.error("Please select your instructions ");
+    }
+
+    if (category.length === 0) {
+      return toast.error("Please sleect at least one category");
+    }
 
     try {
       await onSubmit(data);
@@ -65,7 +85,9 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
           maxLength={200}
         />
       </div>
-      <label className="mb-1 block font-medium">Category*</label>
+      <label className="mb-1 block font-medium">
+        Category* <small>(at least one)</small>
+      </label>
       <Select
         instanceId="category-select"
         isMulti
@@ -83,7 +105,9 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
       />
 
       <div>
-        <label className="mb-1 block font-medium">Ingredients*</label>
+        <label className="mb-1 block font-medium">
+          Ingredients* <small>(at least two)</small>
+        </label>
 
         <div className="flex flex-col gap-2">
           <input
@@ -99,6 +123,7 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
             type="text"
             className="w-full rounded-md border p-2"
             placeholder="Ingredient 2"
+            required
           />
 
           <input
@@ -111,13 +136,16 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
       </div>
 
       <div>
-        <label className="mb-1 block font-medium">Instructions</label>
+        <label className="mb-1 block font-medium">
+          Instructions* <small>(at least one)</small>
+        </label>
 
         <input
           name="instructions"
           type="text"
           className="w-full rounded-md border p-2"
           placeholder="Instruction 1"
+          required
         />
 
         <input

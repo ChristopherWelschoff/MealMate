@@ -3,6 +3,7 @@ import { mutate } from "swr";
 import { useRouter } from "next/router";
 import RecipeForm from "@/components/Form";
 import { Category } from "@/types";
+import { toast } from "react-toastify";
 
 export default function CreateRecipe({
   categories,
@@ -20,10 +21,14 @@ export default function CreateRecipe({
       body: JSON.stringify(data),
     });
 
-    if (response.ok) {
-      await mutate("/api/recipes");
-      router.push("/landingPage");
+    if (!response.ok) {
+      toast.error("Something went wrong");
+      return;
     }
+
+    await mutate("/api/recipes");
+    await router.push("/landingPage");
+    toast.success("Your recipe was successfully created");
   }
 
   return <RecipeForm onSubmit={handleCreate} categories={categories} />;

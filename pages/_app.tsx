@@ -4,6 +4,7 @@ import Layout from "@/components/Layout";
 import { useRouter } from "next/router";
 import useSWR, { SWRConfig } from "swr";
 import type { Recipe } from "@/types";
+import { ToastContainer, Bounce } from "react-toastify";
 
 const fetcher = async (url: string) => {
   const response = await fetch(url);
@@ -41,16 +42,31 @@ export default function App({ Component, pageProps }: AppProps) {
   }
 
   return (
-    <SWRConfig value={{ fetcher }}>
-      <Layout>
-        <Component
-          recipes={recipes}
-          categories={categories}
-          error={error}
-          isLoading={isLoading}
-          {...pageProps}
-        />
-      </Layout>
-    </SWRConfig>
+    <>
+      <SWRConfig value={{ fetcher }}>
+        <Layout>
+          <Component
+            recipes={recipes}
+            categories={categories}
+            error={error}
+            isLoading={isLoading}
+            {...pageProps}
+          />
+        </Layout>
+      </SWRConfig>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
+    </>
   );
 }
