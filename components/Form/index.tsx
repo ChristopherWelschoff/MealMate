@@ -12,6 +12,17 @@ type RecipeFormProps = {
 
 export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
   const [category, setCategory] = useState<Category[]>([]);
+  const [fieldError, setFieldErrors] = useState({
+    title: false,
+    category: false,
+    ingredients: false,
+    instructions: false,
+    duration: false,
+  });
+
+  function handleBlur(value: string, field: string) {
+    setFieldErrors({ ...fieldError, [field]: value.trim() === "" });
+  }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -63,13 +74,18 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
           Title*
         </label>
         <input
+          minLength={2}
+          onBlur={(event) => handleBlur(event.target.value, "title")}
           id="title"
           name="title"
           type="text"
-          className="w-full rounded-md border p-2"
+          className={` ${fieldError.title ? "border-red-500" : ""} w-full rounded-md border p-2`}
           placeholder="Recipe title"
           required
         />
+        {fieldError.title && (
+          <p className="text-sm text-red-500">This field is required</p>
+        )}
       </div>
 
       <div>
@@ -102,7 +118,13 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
         onChange={(selected) => setCategory([...selected])}
         placeholder="Please Select a Category"
         isOptionDisabled={() => category.length >= 2}
+        onBlur={() =>
+          setFieldErrors({ ...fieldError, category: category.length === 0 })
+        }
       />
+      {fieldError.category && (
+        <p className="text-sm text-red-500">This field is required</p>
+      )}
 
       <div>
         <label className="mb-1 block font-medium">
@@ -113,10 +135,14 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
           <input
             name="ingredients"
             type="text"
-            className="w-full rounded-md border p-2"
+            className={` ${fieldError.ingredients ? "border-red-500" : ""} w-full rounded-md border p-2`}
             placeholder="Ingredient 1"
             required
+            onBlur={(event) => handleBlur(event.target.value, "ingredients")}
           />
+          {fieldError.ingredients && (
+            <p className="text-sm text-red-500">This field is required</p>
+          )}
 
           <input
             name="ingredients"
@@ -125,6 +151,9 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
             placeholder="Ingredient 2"
             required
           />
+          {fieldError.ingredients && (
+            <p className="text-sm text-red-500">This field is required</p>
+          )}
 
           <input
             name="ingredients"
@@ -143,10 +172,14 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
         <input
           name="instructions"
           type="text"
-          className="w-full rounded-md border p-2"
+          className={` ${fieldError.instructions ? "border-red-500" : ""} w-full rounded-md border p-2`}
           placeholder="Instruction 1"
           required
+          onBlur={(event) => handleBlur(event.target.value, "instructions")}
         />
+        {fieldError.instructions && (
+          <p className="text-sm text-red-500">This field is required</p>
+        )}
 
         <input
           name="instructions"
@@ -171,10 +204,14 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
           id="duration"
           name="duration"
           type="number"
-          className="w-full rounded-md border p-2"
+          className={` ${fieldError.duration ? "border-red-500" : ""} w-full rounded-md border p-2`}
           placeholder="30"
           required
+          onBlur={(event) => handleBlur(event.target.value, "duration")}
         />
+        {fieldError.duration && (
+          <p className="text-sm text-red-500">This field is required</p>
+        )}
       </div>
 
       <button
