@@ -33,11 +33,11 @@ export default function IngredientsField({
       </label>
       {ingredientFields.map((fieldId, index) => {
         return (
-          <div key={fieldId} className="flex flex-col gap-2">
+          <div key={fieldId} className="relative">
             <input
               name="ingredients"
               type="text"
-              className={` ${hasError ? "border-red-500" : ""} w-full rounded-md border p-2`}
+              className={`w-full rounded-md border p-2 pr-9 ${hasError ? "border-red-500" : ""}`}
               placeholder={`Ingredient ${index + 1}`}
               required={index < 2}
               onBlur={(event) => onBlur(event.target.value, "ingredients")}
@@ -47,7 +47,7 @@ export default function IngredientsField({
               <button
                 type="button"
                 onClick={() => removeIngredientField(fieldId)}
-                className="text-accent hover:text-red-800"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500"
               >
                 ✕
               </button>

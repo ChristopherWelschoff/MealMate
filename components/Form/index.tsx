@@ -30,17 +30,6 @@ export default function RecipeForm({
     instructions: false,
     duration: false,
   });
-  //dynamic inputfield Instructions / Ingredients
-  const [ingredientFields, setIngredientFields] = useState<number[]>(
-    Array.from(
-      { length: recipe?.ingredients?.length ?? 2 },
-      (_, index) => index,
-    ),
-  );
-
-  function addIngredientField() {
-    setIngredientFields([...ingredientFields, ingredientFields.length]);
-  }
 
   function handleBlur(value: string, field: string) {
     setFieldErrors({ ...fieldError, [field]: value.trim() === "" });
@@ -151,9 +140,6 @@ export default function RecipeForm({
       )}
 
       <div>
-        <label className="mb-1 block font-medium">
-          Ingredients* <small>(at least two)</small>
-        </label>
         <IngredientsField
           hasError={fieldError.ingredients}
           onBlur={handleBlur}
