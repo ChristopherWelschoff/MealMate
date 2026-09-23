@@ -47,7 +47,7 @@ export default function IngredientsField({
               <button
                 type="button"
                 onClick={() => removeIngredientField(fieldId)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-accent hover:text-red-500"
               >
                 ✕
               </button>
