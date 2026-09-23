@@ -13,13 +13,11 @@ export default async function handler(
     res.status(500).json({ error: "Database connection failed" });
     return;
   }
+  const { id } = req.query;
 
   if (req.method === "GET") {
     try {
-      const recipes = await Recipe.find().sort({ createdAt: -1 }).populate({
-        path: "category",
-        model: "Category",
-      });
+      const recipes = await Recipe.findById(id);
 
       return res.status(200).json(recipes);
     } catch (error) {
@@ -31,17 +29,15 @@ export default async function handler(
     }
   }
 
-  if (req.method === "POST") {
+  if (req.method === "PUT") {
     try {
       const recipeData = req.body;
 
-      await Recipe.create(recipeData);
+      await Recipe.findByIdAndUpdate(id, recipeData);
 
-      return res.status(201).json({
-        status: "Recipe created",
-      });
+      return res.status(200).json({ status: `Recipe${id} updated` });
     } catch (error) {
-      console.log(error);
+      console.error(error);
 
       return res.status(400).json({
         error: error instanceof Error ? error.message : "Unknown error",

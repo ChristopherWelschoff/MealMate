@@ -6,7 +6,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  await dbConnect();
+  try {
+    await dbConnect();
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Database connection failed" });
+    return;
+  }
 
   if (req.method === "GET") {
     const categories = await Category.find();
