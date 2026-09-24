@@ -39,8 +39,13 @@ export default function DeleteRecipe() {
 
   return (
     <>
-      <button type="button" onClick={openDialog} aria-label="delete-recipe">
-        <Trash className="stroke-gray-500 hover:fill-green-900 hover:stroke-black" />
+      <button
+        className="cursor-pointer"
+        type="button"
+        onClick={openDialog}
+        aria-label="delete-recipe"
+      >
+        <Trash className="stroke-green-800 hover:fill-green-900 hover:stroke-black" />
       </button>
 
       <dialog

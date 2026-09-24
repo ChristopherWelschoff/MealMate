@@ -32,11 +32,15 @@ export default function Navbar() {
       </div>
 
       <div className="flex flex-col items-center">
-        <Heart
-          className={
-            isActive("") ? "fill-green-900 stroke-black" : "stroke-gray-500"
-          }
-        />
+        <Link href="/recipes/favoriteRecipes">
+          <Heart
+            className={
+              isActive("/recipes/favoriteRecipes")
+                ? "fill-green-900 stroke-black"
+                : "stroke-gray-500"
+            }
+          />
+        </Link>
       </div>
     </nav>
   );
