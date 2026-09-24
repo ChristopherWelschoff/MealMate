@@ -14,6 +14,7 @@ import Link from "next/link";
 import { Pencil } from "lucide-react";
 import { Timer } from "lucide-react";
 import DeleteRecipe from "./deleteRecipe";
+import FavoriteButton from "@/components/FavoriteButton";
 
 type RecipeDetailsProps = {
   recipes: Recipe[];
@@ -58,10 +59,11 @@ export default function RecipeDetails({ recipes }: RecipeDetailsProps) {
             >
               <Pencil
                 size={24}
-                className="stroke-gray-500 hover:fill-green-900 hover:stroke-black"
+                className="stroke-green-800 hover:fill-green-900 hover:stroke-black"
               />
             </Link>
             <DeleteRecipe />
+            <FavoriteButton id={recipe._id} />
           </div>
         </CardAction>
 

@@ -5,10 +5,11 @@ import Image from "next/image";
 import { Timer } from "lucide-react";
 import { categoryColors } from "@/lib/utils";
 import Link from "next/link";
+import FavoriteButton from "../FavoriteButton";
 
 export default function RecipeCard({ ...recipe }: Recipe) {
   return (
-    <Link href={`recipes/${recipe._id}`}>
+    <Link href={`/recipes/${recipe._id}`}>
       <Card
         size="sm"
         className="mx-auto grid w-[95%] max-w-3xl grid-cols-5 overflow-hidden p-0"
@@ -25,10 +26,15 @@ export default function RecipeCard({ ...recipe }: Recipe) {
         </div>
 
         <CardHeader className="col-span-3 flex flex-col items-start justify-start gap-6 p-3">
-          <div className="flex flex-col gap-3">
-            <CardTitle className="text-2xl font-bold leading-tight">
-              {recipe.title}
-            </CardTitle>
+          <div className="flex w-full flex-col gap-3">
+            <div className="flex w-full items-start justify-between gap-2">
+              <CardTitle className="text-2xl font-bold leading-tight">
+                {recipe.title}
+              </CardTitle>
+              <div className="-mt-2">
+                <FavoriteButton id={recipe._id} />
+              </div>
+            </div>
 
             <div className="flex flex-wrap gap-2 mt-2">
               {recipe.category.map((category) => (
