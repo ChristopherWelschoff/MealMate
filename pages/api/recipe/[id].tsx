@@ -17,7 +17,10 @@ export default async function handler(
 
   if (req.method === "GET") {
     try {
-      const recipes = await Recipe.findById(id);
+      const recipes = await Recipe.findById(id).populate({
+        path: "category",
+        model: "Category",
+      });
 
       return res.status(200).json(recipes);
     } catch (error) {

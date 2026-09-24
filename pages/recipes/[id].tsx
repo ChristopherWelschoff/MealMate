@@ -1,18 +1,19 @@
 import { Recipe } from "@/types";
 import { useRouter } from "next/router";
 import { Badge } from "@/components/ui/badge";
-// import { Button } from "@/components/ui/button";
 import {
   Card,
   CardAction,
   CardDescription,
-  // CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import Image from "next/image";
 import { categoryColors } from "@/lib/utils";
-// import Link from "next/link";
+import Link from "next/link";
+import { Pencil } from "lucide-react";
+import { Timer } from "lucide-react";
+
 export default function RecipeDetails({ recipes }: { recipes: Recipe[] }) {
   const router = useRouter();
   const { id } = router.query;
@@ -33,8 +34,9 @@ export default function RecipeDetails({ recipes }: { recipes: Recipe[] }) {
           sizes="(max-width: 768px) 100vw, 768px"
         />
       </div>
+
       <CardHeader className="space-y-4">
-        <CardAction className="flex flex-wrap gap-2">
+        <CardAction className="flex flex-col flex-wrap gap-2">
           {recipe.category.map((category) => (
             <Badge
               key={category._id}
@@ -44,13 +46,29 @@ export default function RecipeDetails({ recipes }: { recipes: Recipe[] }) {
               {category.name}
             </Badge>
           ))}
+          <div className="mt-8">
+            <Link href={`/recipes/${recipe._id}/editRecipe`}>
+              <Pencil
+                size={24}
+                className="stroke-gray-500 hover:fill-green-900 hover:stroke-black"
+              />
+            </Link>
+          </div>
         </CardAction>
+
         <CardTitle className="text-3xl font-bold tracking-tight text-gray-900">
           {recipe.title}
         </CardTitle>
         <CardDescription className="text-base leading-relaxed tracking-wide text-gray-600">
-          {recipe.description}
+          <div className="flex flex-col">
+            {recipe.description}
+            <div className="flex mt-3">
+              <Timer size={16} className="mt-0.75" />
+              <span>{recipe.duration} min</span>
+            </div>
+          </div>
         </CardDescription>
+
         {/* INGREDIENTS */}
         <div className="mt-6 space-y-8">
           <section>
@@ -90,18 +108,6 @@ export default function RecipeDetails({ recipes }: { recipes: Recipe[] }) {
           </section>
         </div>
       </CardHeader>
-
-
-      {/* IDK IF I USE THE FOOTER STAYS HERE TILL I DECIDE */}
-
-
-      {/* <CardFooter className="border-t border-gray-100 bg-gray-50 p-4">
-        <Link className="w-full" href="../landingPage">
-          <Button className="w-full bg-accent text-white shadow-sm transition-transform duration-200 hover:scale-[1.02] hover:bg-accent hover:shadow-md">
-            Back
-          </Button>
-        </Link>
-      </CardFooter> */}
     </Card>
   );
 }

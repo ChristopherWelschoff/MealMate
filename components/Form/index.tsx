@@ -2,16 +2,27 @@ import type { Category, Recipe } from "@/types";
 import React, { useState } from "react";
 import Select from "react-select";
 import { toast } from "react-toastify";
+import Link from "next/link";
+import DynamicListField from "../DynamicLstField";
 
 export type RecipeFormData = Omit<Recipe, "_id" | "createdAt" | "updatedAt">;
 
 type RecipeFormProps = {
   onSubmit: (data: RecipeFormData) => Promise<void>;
   categories: Category[];
+  recipe?: Recipe;
 };
 
-export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
-  const [category, setCategory] = useState<Category[]>([]);
+export default function RecipeForm({
+  recipe,
+  onSubmit,
+  categories,
+}: RecipeFormProps) {
+  const [category, setCategory] = useState<Category[]>(
+    recipe ? recipe.category : [],
+  );
+
+  // field error visualization
   const [fieldError, setFieldErrors] = useState({
     title: false,
     category: false,
@@ -82,6 +93,7 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
           className={` ${fieldError.title ? "border-red-500" : ""} w-full rounded-md border p-2`}
           placeholder="Recipe title"
           required
+          defaultValue={recipe?.title}
         />
         {fieldError.title && (
           <p className="text-sm text-red-500">This field is required</p>
@@ -99,6 +111,7 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
           className="w-full rounded-md border p-2"
           placeholder="Recipe description"
           maxLength={200}
+          defaultValue={recipe?.description}
         />
       </div>
       <label className="mb-1 block font-medium">
@@ -126,77 +139,27 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
         <p className="text-sm text-red-500">This field is required</p>
       )}
 
-      <div>
-        <label className="mb-1 block font-medium">
-          Ingredients* <small>(at least two)</small>
-        </label>
+      <DynamicListField
+        label="Ingredients"
+        name="ingredients"
+        itemLabel="Ingredient"
+        minFields={2}
+        initialValues={recipe?.ingredients}
+        hasError={fieldError.ingredients}
+        errorMessage="At least 2 ingredients are required"
+        onBlur={handleBlur}
+      />
 
-        <div className="flex flex-col gap-2">
-          <input
-            name="ingredients"
-            type="text"
-            className={` ${fieldError.ingredients ? "border-red-500" : ""} w-full rounded-md border p-2`}
-            placeholder="Ingredient 1"
-            required
-            onBlur={(event) => handleBlur(event.target.value, "ingredients")}
-          />
-          {fieldError.ingredients && (
-            <p className="text-sm text-red-500">This field is required</p>
-          )}
-
-          <input
-            name="ingredients"
-            type="text"
-            className={` ${fieldError.ingredients ? "border-red-500" : ""} w-full rounded-md border p-2`}
-            placeholder="Ingredient 2"
-            required
-            onBlur={(event) => handleBlur(event.target.value, "ingredients")}
-          />
-          {fieldError.ingredients && (
-            <p className="text-sm text-red-500">This field is required</p>
-          )}
-
-          <input
-            name="ingredients"
-            type="text"
-            className="w-full rounded-md border p-2"
-            placeholder="Ingredient 3"
-          />
-        </div>
-      </div>
-
-      <div>
-        <label className="mb-1 block font-medium">
-          Instructions* <small>(at least one)</small>
-        </label>
-
-        <input
-          name="instructions"
-          type="text"
-          className={` ${fieldError.instructions ? "border-red-500" : ""} w-full rounded-md border p-2`}
-          placeholder="Instruction 1"
-          required
-          onBlur={(event) => handleBlur(event.target.value, "instructions")}
-        />
-        {fieldError.instructions && (
-          <p className="text-sm text-red-500">This field is required</p>
-        )}
-
-        <input
-          name="instructions"
-          type="text"
-          className="mt-2 w-full rounded-md border p-2"
-          placeholder="Instruction 2"
-        />
-
-        <input
-          name="instructions"
-          type="text"
-          className="mt-2 w-full rounded-md border p-2"
-          placeholder="Instruction 3"
-        />
-      </div>
-
+      <DynamicListField
+        label="Instructions"
+        name="instructions"
+        itemLabel="Instruction"
+        minFields={1}
+        initialValues={recipe?.instructions}
+        hasError={fieldError.instructions}
+        errorMessage="At least 1 instruction is required"
+        onBlur={handleBlur}
+      />
       <div>
         <label htmlFor="duration" className="mb-1 block font-medium">
           Duration*
@@ -209,6 +172,7 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
           placeholder="30"
           required
           onBlur={(event) => handleBlur(event.target.value, "duration")}
+          defaultValue={recipe?.duration}
         />
         {fieldError.duration && (
           <p className="text-sm text-red-500">This field is required</p>
@@ -219,8 +183,17 @@ export default function RecipeForm({ onSubmit, categories }: RecipeFormProps) {
         type="submit"
         className="rounded-md bg-accent p-2 font-medium text-white"
       >
-        Save Recipe
+        {recipe ? "Edit Recipe" : "Save Recipe"}
       </button>
+
+      {recipe && (
+        <Link
+          href={`/recipes/${recipe._id}`}
+          className="w-full rounded-md bg-accent p-2 text-center font-medium text-white"
+        >
+          Back
+        </Link>
+      )}
     </form>
   );
 }

@@ -1,4 +1,4 @@
-import { Leaf, Heart, Plus } from "lucide-react";
+import { Leaf, Heart, PlusCircle } from "lucide-react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 export default function Navbar() {
@@ -20,11 +20,11 @@ export default function Navbar() {
       </Link>
 
       <div className="flex flex-col items-center">
-        <Link href="/createRecipe">
-          <Plus
+        <Link href="/recipes/createRecipe">
+          <PlusCircle
             className={
-              isActive("/recipe/createRecipe")
-                ? "fill-green-900 stroke-black"
+              isActive("/recipes/createRecipe")
+                ? " fill-green-900 stroke-black-900"
                 : "stroke-gray-500"
             }
           />
