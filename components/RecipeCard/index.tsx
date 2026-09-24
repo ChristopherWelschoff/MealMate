@@ -9,7 +9,7 @@ import FavoriteButton from "../FavoriteButton";
 
 export default function RecipeCard({ ...recipe }: Recipe) {
   return (
-    <Link href={`recipes/${recipe._id}`}>
+    <Link href={`/recipes/${recipe._id}`}>
       <Card
         size="sm"
         className="mx-auto grid w-[95%] max-w-3xl grid-cols-5 overflow-hidden p-0"
