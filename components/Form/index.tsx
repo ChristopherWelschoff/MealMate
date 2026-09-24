@@ -3,8 +3,7 @@ import React, { useState } from "react";
 import Select from "react-select";
 import { toast } from "react-toastify";
 import Link from "next/link";
-import IngredientsField from "../IngredientFields";
-import InstructionsField from "../InstructionsField";
+import DynamicListField from "../DynamicLstField";
 
 export type RecipeFormData = Omit<Recipe, "_id" | "createdAt" | "updatedAt">;
 
@@ -140,20 +139,27 @@ export default function RecipeForm({
         <p className="text-sm text-red-500">This field is required</p>
       )}
 
-      <div>
-        <IngredientsField
-          hasError={fieldError.ingredients}
-          onBlur={handleBlur}
-          initialIngredients={recipe?.ingredients}
-        />
-      </div>
-
-      <InstructionsField
-        hasError={fieldError.instructions}
+      <DynamicListField
+        label="Ingredients"
+        name="ingredients"
+        itemLabel="Ingredient"
+        minFields={2}
+        initialValues={recipe?.ingredients}
+        hasError={fieldError.ingredients}
+        errorMessage="At least 2 ingredients are required"
         onBlur={handleBlur}
-        initialInstructions={recipe?.instructions}
       />
 
+      <DynamicListField
+        label="Instructions"
+        name="instructions"
+        itemLabel="Instruction"
+        minFields={1}
+        initialValues={recipe?.instructions}
+        hasError={fieldError.instructions}
+        errorMessage="At least 1 instruction is required"
+        onBlur={handleBlur}
+      />
       <div>
         <label htmlFor="duration" className="mb-1 block font-medium">
           Duration*
