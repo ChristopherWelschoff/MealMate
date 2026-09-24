@@ -14,7 +14,7 @@ export default function UpdateRecipe({
 }) {
   const router = useRouter();
   const { id } = router.query;
-  const { data: recipe } = useSWR<Recipe>(`/api/recipe/${id}`);
+  const { data: recipe } = useSWR<Recipe>( id? `/api/recipe/${id}`: null);
 
   async function handleUpdate(data: RecipeFormData) {
     const response = await fetch(`/api/recipe/${id}`, {
@@ -31,7 +31,7 @@ export default function UpdateRecipe({
     }
 
     await mutate("/api/recipes");
-    await mutate(`/api/recipes/${id}`);
+    await mutate(`/api/recipe/${id}`);
     await router.push(`/recipes/${id}`);
     toast.success("Your recipe was successfully updated");
   }

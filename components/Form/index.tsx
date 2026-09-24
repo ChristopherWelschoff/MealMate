@@ -180,14 +180,13 @@ export default function RecipeForm({
         {recipe ? "Edit Recipe" : "Save Recipe"}
       </button>
 
-      {recipe ? (
-        <Link className="w-full" href={`/recipes/${recipe._id}`}>
-          <button className=" w-full rounded-md bg-accent p-2 font-medium text-white">
-            Back
-          </button>
+      {recipe && (
+        <Link
+          href={`/recipes/${recipe._id}`}
+          className="w-full rounded-md bg-accent p-2 text-center font-medium text-white"
+        >
+          Back
         </Link>
-      ) : (
-        ""
       )}
     </form>
   );

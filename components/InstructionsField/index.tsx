@@ -6,24 +6,41 @@ type InstructionsFieldProps = {
   onBlur: (value: string, field: string) => void;
 };
 
+// ein Feld = ID + eigener Startwert
+type InstructionField = {
+  id: string;
+  defaultValue: string;
+};
+
 export default function InstructionsField({
   initialInstructions,
   hasError,
   onBlur,
 }: InstructionsFieldProps) {
-  const [instructionFields, setInstructionFields] = useState<number[]>(
-    Array.from(
-      { length: initialInstructions?.length ?? 1 },
-      (_, index) => index,
-    ),
-  );
+  // Objekte statt nur IDs
+  const [instructionFields, setInstructionFields] = useState<
+    InstructionField[]
+  >(() => {
+    const start = initialInstructions?.length ? initialInstructions : [""];
+    return start.map((value) => ({
+      id: crypto.randomUUID(),
+      defaultValue: value,
+    }));
+  });
 
   function addInstructionField() {
-    setInstructionFields([...instructionFields, instructionFields.length]);
+    //neues Feld startet immer leer
+    setInstructionFields((prev) => [
+      ...prev,
+      { id: crypto.randomUUID(), defaultValue: "" },
+    ]);
   }
 
-  function removeInstructionField(fieldId: number) {
-    setInstructionFields(instructionFields.filter((id) => id !== fieldId));
+  function removeInstructionField(fieldId: string) {
+   
+    setInstructionFields((prev) =>
+      prev.filter((field) => field.id !== fieldId),
+    );
   }
 
   return (
@@ -31,9 +48,9 @@ export default function InstructionsField({
       <label className="mb-1 block font-medium">
         Instructions* <small>(at least one)</small>
       </label>
-      {instructionFields.map((fieldId, index) => {
+      {instructionFields.map((field, index) => {
         return (
-          <div key={fieldId} className="relative mt-2 first:mt-0">
+          <div key={field.id} className="relative mt-2 first:mt-0">
             <input
               name="instructions"
               type="text"
@@ -41,12 +58,13 @@ export default function InstructionsField({
               placeholder={`Instruction ${index + 1}`}
               required={index < 1}
               onBlur={(event) => onBlur(event.target.value, "instructions")}
-              defaultValue={initialInstructions?.[index]}
+              defaultValue={field.defaultValue} 
             />
             {instructionFields.length > 1 && (
               <button
                 type="button"
-                onClick={() => removeInstructionField(fieldId)}
+                onClick={() => removeInstructionField(field.id)} 
+                aria-label={`Remove instruction ${index + 1}`} 
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500"
               >
                 ✕
