@@ -13,8 +13,13 @@ import { categoryColors } from "@/lib/utils";
 import Link from "next/link";
 import { Pencil } from "lucide-react";
 import { Timer } from "lucide-react";
+import DeleteRecipe from "./deleteRecipe";
 
-export default function RecipeDetails({ recipes }: { recipes: Recipe[] }) {
+type RecipeDetailsProps = {
+  recipes: Recipe[];
+};
+
+export default function RecipeDetails({ recipes }: RecipeDetailsProps) {
   const router = useRouter();
   const { id } = router.query;
   const recipe = recipes?.find((recipe) => recipe._id === id);
@@ -46,13 +51,17 @@ export default function RecipeDetails({ recipes }: { recipes: Recipe[] }) {
               {category.name}
             </Badge>
           ))}
-          <div className="mt-8">
-            <Link href={`/recipes/${recipe._id}/editRecipe`}>
+          <div className="flex gap-4 mt-8">
+            <Link
+              aria-label="edit-recipe"
+              href={`/recipes/${recipe._id}/editRecipe`}
+            >
               <Pencil
                 size={24}
                 className="stroke-gray-500 hover:fill-green-900 hover:stroke-black"
               />
             </Link>
+            <DeleteRecipe />
           </div>
         </CardAction>
 

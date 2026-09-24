@@ -48,6 +48,20 @@ export default async function handler(
     }
   }
 
+  if (req.method === "DELETE") {
+    try {
+      await Recipe.findByIdAndDelete(id);
+
+      return res.status(200).json({ status: `Recipe${id} deleted` });
+    } catch (error) {
+      console.error(error);
+
+      return res.status(400).json({
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+    }
+  }
+
   return res.status(405).json({
     message: "Method not allowed",
   });
