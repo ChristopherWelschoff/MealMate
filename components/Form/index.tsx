@@ -18,6 +18,9 @@ export default function RecipeForm({
   onSubmit,
   categories,
 }: RecipeFormProps) {
+  const [letterCount, setLetterCount] = useState(
+    recipe?.description?.length ?? 0,
+  );
   const [category, setCategory] = useState<Category[]>(
     recipe ? recipe.category : [],
   );
@@ -100,20 +103,27 @@ export default function RecipeForm({
         )}
       </div>
 
-      <div>
-        <label htmlFor="description" className="mb-1 block font-medium">
+      <div className="flex flex-col justify-center items-end ">
+        <label
+          htmlFor="description"
+          className="mb-1 block font-medium self-start"
+        >
           Description
         </label>
         <textarea
+          onChange={(event) => setLetterCount(event?.target.value.length)}
           rows={5}
           id="description"
           name="description"
           className="w-full rounded-md border p-2"
           placeholder="Recipe description"
-          maxLength={200}
+          maxLength={150}
           defaultValue={recipe?.description}
         />
+
+        <small className="m-2">{150 - letterCount} letters left</small>
       </div>
+
       <label className="mb-1 block font-medium">
         Category* <small>(at least one)</small>
       </label>
