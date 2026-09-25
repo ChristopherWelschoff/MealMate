@@ -6,17 +6,11 @@ import { useState } from "react";
 
 type RecipeListProps = {
   recipes?: Recipe[];
-  error: boolean;
-  isLoading: boolean;
+
   categories: Category[];
 };
 
-export default function RecipeList({
-  recipes,
-  error,
-  isLoading,
-  categories,
-}: RecipeListProps) {
+export default function RecipeList({ recipes, categories }: RecipeListProps) {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filterTerm, setFilterTerm] = useState<string>("");
 
@@ -32,19 +26,15 @@ export default function RecipeList({
     return matchesSearch && matchesCategory;
   });
 
-  if (isLoading) {
-    return <p>Loading recipes...</p>;
-  }
-
-  if (error) {
-    return <p>Error loading recipes.</p>;
-  }
-
   return (
     <>
       <div className="flex mx-auto w-[95%]  flex-col">
         <SearchBar onSearch={setSearchTerm} searchTerm={searchTerm} />
-        <FilterCarousel filterTerm={filterTerm} onFilter={setFilterTerm} categories={categories} />
+        <FilterCarousel
+          filterTerm={filterTerm}
+          onFilter={setFilterTerm}
+          categories={categories}
+        />
         {filteredRecipes?.length === 0 ? (
           <p>No recipe found</p>
         ) : (

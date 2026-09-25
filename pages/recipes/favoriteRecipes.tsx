@@ -22,15 +22,17 @@ export default function FavoriteRecipes({
   );
 
   if (!isLoading && !error && favoriteRecipes?.length === 0) {
-    return <p>No favorites yet – go find some tasty recipes!</p>;
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center px-4">
+        <p className="text-xl">No favorites yet- go find some tasty ones!</p>
+      </div>
+    );
   }
 
   return (
-    <RecipeList
-      categories={categories}
-      recipes={favoriteRecipes}
-      error={error}
-      isLoading={isLoading}
-    />
+    <>
+      <h1 className="text-center font-bold text-2xl">Favorites</h1>
+      <RecipeList categories={categories} recipes={favoriteRecipes} />
+    </>
   );
 }
