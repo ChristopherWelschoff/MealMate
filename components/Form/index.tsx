@@ -141,9 +141,6 @@ export default function RecipeForm({
         onChange={(selected) => setCategory([...selected])}
         placeholder="Please Select a Category"
         isOptionDisabled={() => category.length >= 2}
-        onBlur={() =>
-          setFieldErrors({ ...fieldError, category: category.length === 0 })
-        }
       />
       {fieldError.category && (
         <p className="text-sm text-red-500">This field is required</p>
