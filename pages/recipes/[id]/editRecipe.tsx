@@ -14,7 +14,7 @@ export default function UpdateRecipe({
 }) {
   const router = useRouter();
   const { id } = router.query;
-  const { data: recipe } = useSWR<Recipe>( id? `/api/recipe/${id}`: null);
+  const { data: recipe } = useSWR<Recipe>(id ? `/api/recipe/${id}` : null);
 
   async function handleUpdate(data: RecipeFormData) {
     const response = await fetch(`/api/recipe/${id}`, {
@@ -37,11 +37,14 @@ export default function UpdateRecipe({
   }
 
   return (
-    <RecipeForm
-      key={recipe?._id}
-      recipe={recipe}
-      onSubmit={handleUpdate}
-      categories={categories}
-    />
+    <>
+      <h1 className="text-center text-2xl font-bold ">Edit Recipe</h1>
+      <RecipeForm
+        key={recipe?._id}
+        recipe={recipe}
+        onSubmit={handleUpdate}
+        categories={categories}
+      />
+    </>
   );
 }

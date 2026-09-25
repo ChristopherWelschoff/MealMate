@@ -1,5 +1,6 @@
 import RecipeList from "@/components/RecipeList";
 import type { Category, Recipe } from "@/types";
+import { AlertDestructive, Spinner } from "@/components/StateMessages";
 
 type LandingPageProps = {
   recipes: Recipe[];
@@ -15,23 +16,25 @@ export default function LandingPage({
   categories,
 }: LandingPageProps) {
   if (isLoading) {
-    return <p>Loading Recipes...</p>;
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center px-4">
+        <Spinner />;
+      </div>
+    );
   }
 
   if (error) {
-    return <p>Error Loading Recipes</p>;
-  }
-
-  if (!recipes) {
-    return <p>No Recipes Found</p>;
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center px-4">
+        <AlertDestructive />
+      </div>
+    );
   }
 
   return (
-    <RecipeList
-      categories={categories}
-      error={error}
-      isLoading={isLoading}
-      recipes={recipes}
-    />
+    <>
+      <h1 className="text-center font-bold text-2xl">Recipes</h1>
+      <RecipeList categories={categories} recipes={recipes} />
+    </>
   );
 }

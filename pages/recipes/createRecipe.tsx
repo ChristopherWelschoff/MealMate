@@ -31,5 +31,10 @@ export default function CreateRecipe({
     toast.success("Your recipe was successfully created");
   }
 
-  return <RecipeForm onSubmit={handleCreate} categories={categories} />;
+  return (
+    <>
+      <h1 className="text-center text-2xl font-bold ">Create Recipe</h1>
+      <RecipeForm onSubmit={handleCreate} categories={categories} />
+    </>
+  );
 }
