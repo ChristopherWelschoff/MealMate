@@ -1,6 +1,8 @@
 import type { Category, Recipe } from "@/types";
 import RecipeCard from "../RecipeCard";
-import FilterCaoursel from "../FilterCarousel";
+import FilterCarousel from "../FilterCarousel";
+import { SearchBar } from "../SearchBar";
+import { useState } from "react";
 
 type RecipeListProps = {
   recipes?: Recipe[];
@@ -15,11 +17,21 @@ export default function RecipeList({
   isLoading,
   categories,
 }: RecipeListProps) {
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [filterTerm, setFilterTerm] = useState<string>("");
 
-  function handleFilter(name: string) {
+  const filteredRecipes = recipes?.filter((recipe) => {
+    const matchesSearch = recipe.title
+      .toLocaleLowerCase()
+      .trim()
+      .includes(searchTerm.toLocaleLowerCase().trim());
+    const matchesCategory =
+      filterTerm === "" ||
+      recipe.category.some((category) => category.name === filterTerm);
 
+    return matchesSearch && matchesCategory;
+  });
 
-  }
   if (isLoading) {
     return <p>Loading recipes...</p>;
   }
@@ -28,17 +40,20 @@ export default function RecipeList({
     return <p>Error loading recipes.</p>;
   }
 
-  if (!recipes) {
-    return <p>No recipes found.</p>;
-  }
-
   return (
     <>
-      <FilterCaoursel onFilter={handleFilter} categories={categories} />
-      <div className="flex flex-col gap-3">
-        {recipes?.map((recipe) => (
-          <RecipeCard key={recipe._id} {...recipe} />
-        ))}
+      <div className="flex mx-auto w-[95%]  flex-col">
+        <SearchBar onSearch={setSearchTerm} searchTerm={searchTerm} />
+        <FilterCarousel onFilter={setFilterTerm} categories={categories} />
+        {filteredRecipes?.length === 0 ? (
+          <p>No recipe found</p>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {filteredRecipes?.map((recipe) => (
+              <RecipeCard key={recipe._id} {...recipe} />
+            ))}
+          </div>
+        )}
       </div>
     </>
   );
