@@ -44,7 +44,7 @@ export default function RecipeList({
     <>
       <div className="flex mx-auto w-[95%]  flex-col">
         <SearchBar onSearch={setSearchTerm} searchTerm={searchTerm} />
-        <FilterCarousel onFilter={setFilterTerm} categories={categories} />
+        <FilterCarousel filterTerm={filterTerm} onFilter={setFilterTerm} categories={categories} />
         {filteredRecipes?.length === 0 ? (
           <p>No recipe found</p>
         ) : (
