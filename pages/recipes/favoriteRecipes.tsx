@@ -1,17 +1,19 @@
 import RecipeList from "@/components/RecipeList";
 import useFavorites from "@/hooks/useFavorites";
-import { Recipe } from "@/types";
+import { Category, Recipe } from "@/types";
 
 type FavoriteRecipesProps = {
   recipes?: Recipe[];
   error: boolean;
   isLoading: boolean;
+  categories: Category[];
 };
 
 export default function FavoriteRecipes({
   recipes,
   error,
   isLoading,
+  categories,
 }: FavoriteRecipesProps) {
   const { favoriteIds } = useFavorites();
 
@@ -24,6 +26,11 @@ export default function FavoriteRecipes({
   }
 
   return (
-    <RecipeList recipes={favoriteRecipes} error={error} isLoading={isLoading} />
+    <RecipeList
+      categories={categories}
+      recipes={favoriteRecipes}
+      error={error}
+      isLoading={isLoading}
+    />
   );
 }

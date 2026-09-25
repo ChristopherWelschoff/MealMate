@@ -3,7 +3,7 @@ import "@/styles/globals.css";
 import Layout from "@/components/Layout";
 import { useRouter } from "next/router";
 import useSWR, { SWRConfig } from "swr";
-import type { Recipe } from "@/types";
+import type { Recipe, Category } from "@/types";
 import { ToastContainer, Bounce } from "react-toastify";
 
 const fetcher = async (url: string) => {
@@ -32,7 +32,8 @@ export default function App({ Component, pageProps }: AppProps) {
     error,
     isLoading,
   } = useSWR<Recipe[]>("/api/recipes", fetcher);
-  const { data: categories } = useSWR<Recipe[]>("/api/categories", fetcher);
+  const { data: categories } = useSWR<Category[]>("/api/categories", fetcher);
+
 
   const router = useRouter();
   const isHome = router.pathname === "/";
