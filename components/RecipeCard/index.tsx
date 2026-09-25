@@ -12,7 +12,7 @@ export default function RecipeCard({ ...recipe }: Recipe) {
     <Link href={`/recipes/${recipe._id}`}>
       <Card
         size="sm"
-        className="mx-auto grid  max-w-3xl grid-cols-5 overflow-hidden p-0"
+        className="mx-auto grid  w-full grid-cols-5 overflow-hidden p-0"
       >
         <div className="relative col-span-2 ">
           <Image
