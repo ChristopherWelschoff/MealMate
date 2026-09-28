@@ -17,7 +17,7 @@ export default function RecipeCard({ ...recipe }: Recipe) {
         <div className="relative col-span-2 ">
           <Image
             loading="eager"
-            src="/assets/placeholder.jpg"
+            src={recipe.imageUrl || ""}
             alt={recipe.title}
             fill
             className="object-cover"

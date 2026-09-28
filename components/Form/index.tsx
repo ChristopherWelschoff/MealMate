@@ -1,8 +1,8 @@
 import type { Category, Recipe } from "@/types";
+import Link from "next/link";
 import React, { useState } from "react";
 import Select from "react-select";
 import { toast } from "react-toastify";
-import Link from "next/link";
 import DynamicListField from "../DynamicLstField";
 
 export type RecipeFormData = Omit<Recipe, "_id" | "createdAt" | "updatedAt">;
@@ -18,12 +18,24 @@ export default function RecipeForm({
   onSubmit,
   categories,
 }: RecipeFormProps) {
+  const [imagePreview, setImagePreview] = useState<string>("");
   const [letterCount, setLetterCount] = useState(
     recipe?.description?.length ?? 0,
   );
   const [category, setCategory] = useState<Category[]>(
     recipe ? recipe.category : [],
   );
+
+  //image upload
+  function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+    const preview = URL.createObjectURL(file);
+
+    setImagePreview(preview);
+  }
 
   // field error visualization
   const [fieldError, setFieldErrors] = useState({
@@ -52,6 +64,24 @@ export default function RecipeForm({
       instructions: formData.getAll("instructions") as string[],
       duration: Number(formData.get("duration")),
     };
+
+    // form data image upload
+    const imageFile = formData.get("image") as File;
+    if (imageFile.size > 0) {
+      const uploadData = new FormData();
+      uploadData.append("image", imageFile);
+      const response = await fetch("/api/uploadImage", {
+        method: "POST",
+        body: uploadData,
+      });
+
+      if (!response.ok) {
+        toast.error("Image upload failed");
+        return;
+      }
+      const { imageUrl } = await response.json();
+      data.imageUrl = imageUrl;
+    }
 
     function removeEmpty(value: string[]) {
       return value.filter((value) => value.trim());
@@ -123,6 +153,27 @@ export default function RecipeForm({
 
         <small className="m-2">{150 - letterCount} letters left</small>
       </div>
+
+      <label htmlFor="image">Upload Image</label>
+      <div>
+        <input
+          id="image"
+          name="image"
+          accept="image/*"
+          className="file:mr-3 file:rounded-md file:border-0 file:bg-green-800 file:px-3 file:py-1 file:text-white"
+          type="file"
+          onChange={handleImageChange}
+        />
+      </div>
+
+      {imagePreview && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={imagePreview}
+          alt="Preview of selected image"
+          className="mt-2 h-40 w-full rounded-md object-cover"
+        />
+      )}
 
       <label className="mb-1 block font-medium">
         Category* <small>(at least one)</small>
