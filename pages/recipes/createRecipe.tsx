@@ -1,8 +1,7 @@
-import type { RecipeFormData } from "@/components/Form";
 import { mutate } from "swr";
 import { useRouter } from "next/router";
 import RecipeForm from "@/components/Form";
-import { Category } from "@/types";
+import type { Category } from "@/types";
 import { toast } from "react-toastify";
 
 export default function CreateRecipe({
@@ -12,13 +11,10 @@ export default function CreateRecipe({
 }) {
   const router = useRouter();
 
-  async function handleCreate(data: RecipeFormData) {
+  async function handleCreate(formData: FormData) {
     const response = await fetch("/api/recipes", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
+      body: formData,
     });
 
     if (!response.ok) {
@@ -33,7 +29,7 @@ export default function CreateRecipe({
 
   return (
     <>
-      <h1 className="text-center text-2xl font-bold ">Create Recipe</h1>
+      <h1 className="text-center text-2xl font-bold">Create Recipe</h1>
       <RecipeForm onSubmit={handleCreate} categories={categories} />
     </>
   );

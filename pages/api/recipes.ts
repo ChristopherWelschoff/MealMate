@@ -1,6 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "@/db/connect";
 import Recipe from "@/db/schemas/Recipe";
+import { parseForm } from "@/lib/parseForm";
+import { uploadToCloudinary } from "@/lib/cloudinary";
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
 export default async function handler(
   req: NextApiRequest,
@@ -24,7 +32,6 @@ export default async function handler(
       return res.status(200).json(recipes);
     } catch (error) {
       console.error(error);
-
       return res.status(400).json({
         error: error instanceof Error ? error.message : "Unknown error",
       });
@@ -33,23 +40,35 @@ export default async function handler(
 
   if (req.method === "POST") {
     try {
-      const recipeData = req.body;
+      const { fields, files } = await parseForm(req);
+
+      const imageFile = files.image?.[0];
+      let imageUrl: string | undefined;
+
+      if (imageFile && imageFile.size > 0) {
+        imageUrl = await uploadToCloudinary(imageFile.filepath);
+      }
+
+      const recipeData = {
+        title: fields.title?.[0],
+        description: fields.description?.[0],
+        ingredients: fields.ingredients ?? [],
+        instructions: fields.instructions ?? [],
+        category: fields.category ?? [],
+        duration: Number(fields.duration?.[0]),
+        imageUrl,
+      };
 
       await Recipe.create(recipeData);
 
-      return res.status(201).json({
-        status: "Recipe created",
-      });
+      return res.status(201).json({ status: "Recipe created" });
     } catch (error) {
-      console.log(error);
-
+      console.error(error);
       return res.status(400).json({
         error: error instanceof Error ? error.message : "Unknown error",
       });
     }
   }
 
-  return res.status(405).json({
-    message: "Method not allowed",
-  });
+  return res.status(405).json({ message: "Method not allowed" });
 }

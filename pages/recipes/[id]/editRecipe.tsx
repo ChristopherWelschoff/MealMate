@@ -1,11 +1,9 @@
-import type { RecipeFormData } from "@/components/Form";
 import { mutate } from "swr";
 import { useRouter } from "next/router";
 import RecipeForm from "@/components/Form";
-import { Category } from "@/types";
+import type { Category, Recipe } from "@/types";
 import { toast } from "react-toastify";
 import useSWR from "swr";
-import type { Recipe } from "@/types";
 
 export default function UpdateRecipe({
   categories,
@@ -16,13 +14,10 @@ export default function UpdateRecipe({
   const { id } = router.query;
   const { data: recipe } = useSWR<Recipe>(id ? `/api/recipe/${id}` : null);
 
-  async function handleUpdate(data: RecipeFormData) {
+  async function handleUpdate(formData: FormData) {
     const response = await fetch(`/api/recipe/${id}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
+      body: formData,
     });
 
     if (!response.ok) {
@@ -38,7 +33,7 @@ export default function UpdateRecipe({
 
   return (
     <>
-      <h1 className="text-center text-2xl font-bold ">Edit Recipe</h1>
+      <h1 className="text-center text-2xl font-bold">Edit Recipe</h1>
       <RecipeForm
         key={recipe?._id}
         recipe={recipe}
