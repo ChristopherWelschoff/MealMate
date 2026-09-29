@@ -35,7 +35,7 @@ export default function RecipeDetails({ recipes }: RecipeDetailsProps) {
         <div className="absolute inset-0 z-30 bg-black/25" />
         <Image
           loading="eager"
-          src="/assets/placeholder.jpg"
+          src={recipe.imageUrl || "/assets/placeholder.svg"}
           alt={recipe.title}
           fill
           className="z-20 object-cover transition-transform duration-300 hover:scale-105"

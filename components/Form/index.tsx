@@ -1,14 +1,14 @@
 import type { Category, Recipe } from "@/types";
+import Link from "next/link";
 import React, { useState } from "react";
 import Select from "react-select";
 import { toast } from "react-toastify";
-import Link from "next/link";
 import DynamicListField from "../DynamicLstField";
-
-export type RecipeFormData = Omit<Recipe, "_id" | "createdAt" | "updatedAt">;
+import ImageUploadField from "../ImageUploadField";
+import { compressImage } from "@/lib/compressImage";
 
 type RecipeFormProps = {
-  onSubmit: (data: RecipeFormData) => Promise<void>;
+  onSubmit: (formData: FormData) => Promise<void>;
   categories: Category[];
   recipe?: Recipe;
 };
@@ -18,6 +18,7 @@ export default function RecipeForm({
   onSubmit,
   categories,
 }: RecipeFormProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [letterCount, setLetterCount] = useState(
     recipe?.description?.length ?? 0,
   );
@@ -25,7 +26,7 @@ export default function RecipeForm({
     recipe ? recipe.category : [],
   );
 
-  // field error visualization
+
   const [fieldError, setFieldErrors] = useState({
     title: false,
     category: false,
@@ -43,38 +44,51 @@ export default function RecipeForm({
 
     const formData = new FormData(event.currentTarget);
 
-    //required Title,category, ingredients instructions and duration
-    const data: RecipeFormData = {
-      title: formData.get("title") as string,
-      description: formData.get("description") as string,
-      category,
-      ingredients: formData.getAll("ingredients") as string[],
-      instructions: formData.getAll("instructions") as string[],
-      duration: Number(formData.get("duration")),
-    };
+    const ingredients = (formData.getAll("ingredients") as string[]).filter(
+      (value) => value.trim(),
+    );
+    const instructions = (formData.getAll("instructions") as string[]).filter(
+      (value) => value.trim(),
+    );
 
-    function removeEmpty(value: string[]) {
-      return value.filter((value) => value.trim());
+  
+    if (ingredients.length <= 1) {
+      return toast.error("Please add at least 2 ingredients");
     }
-
-    data.ingredients = removeEmpty(data.ingredients);
-    data.instructions = removeEmpty(data.instructions);
-
-    if (data.ingredients.length <= 1) {
-      return toast.error("Please select at least 2 Ingredients ");
+    if (instructions.length === 0) {
+      return toast.error("Please add your instructions");
     }
-    if (data.instructions.length === 0) {
-      return toast.error("Please select your instructions ");
-    }
-
     if (category.length === 0) {
-      return toast.error("Please sleect at least one category");
+      return toast.error("Please select at least one category");
     }
+
+
+    formData.delete("ingredients");
+    ingredients.forEach((item) => formData.append("ingredients", item));
+
+    formData.delete("instructions");
+    instructions.forEach((item) => formData.append("instructions", item));
+
+    formData.delete("category");
+    category.forEach((item) => formData.append("category", item._id));
+
+    setIsSubmitting(true);
 
     try {
-      await onSubmit(data);
+  
+      const imageFile = formData.get("image") as File;
+      if (imageFile.size > 0) {
+        const compressedFile = await compressImage(imageFile);
+        formData.set("image", compressedFile, imageFile.name);
+      }
+
+  
+      await onSubmit(formData);
     } catch (error) {
       console.log(error);
+      toast.error("Could not save recipe. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -93,7 +107,7 @@ export default function RecipeForm({
           id="title"
           name="title"
           type="text"
-          className={` ${fieldError.title ? "border-red-500" : ""} w-full rounded-md border p-2`}
+          className={`${fieldError.title ? "border-red-500" : ""} w-full rounded-md border p-2`}
           placeholder="Recipe title"
           required
           defaultValue={recipe?.title}
@@ -103,15 +117,15 @@ export default function RecipeForm({
         )}
       </div>
 
-      <div className="flex flex-col justify-center items-end ">
+      <div className="flex flex-col items-end justify-center">
         <label
           htmlFor="description"
-          className="mb-1 block font-medium self-start"
+          className="mb-1 block self-start font-medium"
         >
           Description
         </label>
         <textarea
-          onChange={(event) => setLetterCount(event?.target.value.length)}
+          onChange={(event) => setLetterCount(event.target.value.length)}
           rows={5}
           id="description"
           name="description"
@@ -123,6 +137,8 @@ export default function RecipeForm({
 
         <small className="m-2">{150 - letterCount} letters left</small>
       </div>
+
+      <ImageUploadField initialImageUrl={recipe?.imageUrl} />
 
       <label className="mb-1 block font-medium">
         Category* <small>(at least one)</small>
@@ -167,6 +183,7 @@ export default function RecipeForm({
         errorMessage="At least 1 instruction is required"
         onBlur={handleBlur}
       />
+
       <div>
         <label htmlFor="duration" className="mb-1 block font-medium">
           Duration*
@@ -175,7 +192,7 @@ export default function RecipeForm({
           id="duration"
           name="duration"
           type="number"
-          className={` ${fieldError.duration ? "border-red-500" : ""} w-full rounded-md border p-2`}
+          className={`${fieldError.duration ? "border-red-500" : ""} w-full rounded-md border p-2`}
           placeholder="30"
           required
           onBlur={(event) => handleBlur(event.target.value, "duration")}
@@ -188,9 +205,10 @@ export default function RecipeForm({
 
       <button
         type="submit"
-        className="rounded-md bg-accent p-2 font-medium text-white"
+        disabled={isSubmitting}
+        className="rounded-md bg-accent p-2 font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {recipe ? "Edit Recipe" : "Save Recipe"}
+        {isSubmitting ? "Saving..." : recipe ? "Save changes" : "Save Recipe"}
       </button>
 
       {recipe && (
