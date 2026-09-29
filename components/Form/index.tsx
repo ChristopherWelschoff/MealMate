@@ -138,7 +138,6 @@ export default function RecipeForm({
       </div>
 
       <ImageUploadField initialImageUrl={recipe?.imageUrl} />
-
       <label className="mb-1 block font-medium">
         Category* <small>(at least one)</small>
       </label>
