@@ -49,6 +49,12 @@ const recipeSchema = new Schema(
       required: true,
       min: 1,
     },
+    nutrition: {
+      calories: { type: Number },
+      protein: { type: Number },
+      carbs: { type: Number },
+      fat: { type: Number },
+    },
   },
   {
     timestamps: true,

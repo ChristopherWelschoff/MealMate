@@ -9,6 +9,7 @@ export type Recipe = {
   duration: number;
   createdAt: string;
   updatedAt: string;
+  nutrition?: Nutrition;
 };
 
 export type Category = {
@@ -16,4 +17,11 @@ export type Category = {
   name: string;
   createdAt: string;
   updatedAt: string;
+};
+
+export type Nutrition = {
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
 };
