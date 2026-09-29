@@ -18,6 +18,7 @@ export default function RecipeForm({
   onSubmit,
   categories,
 }: RecipeFormProps) {
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [imagePreview, setImagePreview] = useState<string>("");
   const [letterCount, setLetterCount] = useState(
     recipe?.description?.length ?? 0,
@@ -65,24 +66,6 @@ export default function RecipeForm({
       duration: Number(formData.get("duration")),
     };
 
-    // form data image upload
-    const imageFile = formData.get("image") as File;
-    if (imageFile.size > 0) {
-      const uploadData = new FormData();
-      uploadData.append("image", imageFile);
-      const response = await fetch("/api/uploadImage", {
-        method: "POST",
-        body: uploadData,
-      });
-
-      if (!response.ok) {
-        toast.error("Image upload failed");
-        return;
-      }
-      const { imageUrl } = await response.json();
-      data.imageUrl = imageUrl;
-    }
-
     function removeEmpty(value: string[]) {
       return value.filter((value) => value.trim());
     }
@@ -101,10 +84,32 @@ export default function RecipeForm({
       return toast.error("Please sleect at least one category");
     }
 
+    setIsSubmitting(true);
+
     try {
+      // form data image upload
+      const imageFile = formData.get("image") as File;
+      if (imageFile.size > 0) {
+        const uploadData = new FormData();
+        uploadData.append("image", imageFile);
+        const response = await fetch("/api/uploadImage", {
+          method: "POST",
+          body: uploadData,
+        });
+
+        if (!response.ok) {
+          toast.error("Image upload failed");
+          return;
+        }
+        const { imageUrl } = await response.json();
+        data.imageUrl = imageUrl;
+      }
+
       await onSubmit(data);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -239,9 +244,10 @@ export default function RecipeForm({
 
       <button
         type="submit"
-        className="rounded-md bg-accent p-2 font-medium text-white"
+        disabled={isSubmitting}
+        className="rounded-md bg-accent p-2 font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {recipe ? "Edit Recipe" : "Save Recipe"}
+        {isSubmitting ? "Saving..." : recipe ? "Save changes" : "Save Recipe"}
       </button>
 
       {recipe && (
