@@ -26,18 +26,16 @@ export default function NutritionInfo({ nutrition }: NutritionInfoProps) {
 
   return (
     <div>
-      <h2 className="mb-3 text-xl font-semibold tracking-tight text-gray-900">
-        Nutrition:
-      </h2>
-
-      <dl className="grid grid-cols-4 gap-2">
+      <dl className="grid grid-cols-4 gap-1.5">
         {items.map((item) => (
           <div
             key={item.label}
-            className="flex flex-col items-center rounded-lg border border-green-200 bg-green-50 px-2 py-3"
+            className="flex flex-col-reverse items-center rounded-md bg-gray-50 py-1.5"
           >
-            <dd className="text-lg font-bold text-green-900">{item.value}</dd>
-            <dt className="text-xs text-green-800">{item.label}</dt>
+            <dt className="text-[11px] text-gray-500">{item.label}</dt>
+            <dd className="text-sm font-semibold text-gray-900">
+              {item.value}
+            </dd>
           </div>
         ))}
       </dl>

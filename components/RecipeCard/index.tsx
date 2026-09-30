@@ -49,7 +49,7 @@ export default function RecipeCard({ ...recipe }: Recipe) {
               ))}
             </div>
           </div>
-          <NutritionInfo />
+          <NutritionInfo nutrition={recipe.nutrition} />
           <div className=" text-sm mt-5">
             <div className="flex items-center justify-center gap-2 text-sm ">
               <Timer size={16} className=" -translate-y-px" />

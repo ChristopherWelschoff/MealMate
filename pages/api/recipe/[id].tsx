@@ -65,6 +65,7 @@ export default async function handler(
 
       if (ingredientsChanged) {
         const nutrition = await calculateNutrition(newIngredients);
+
         if (nutrition) {
           updateData.nutrition = nutrition;
         }

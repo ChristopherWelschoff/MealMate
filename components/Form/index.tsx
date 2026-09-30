@@ -157,9 +157,9 @@ export default function RecipeForm({
         <p className="text-sm text-red-500">This field is required</p>
       )}
       <small className="text-gray-500">
-        {
-          'Tip: Enter amounts in grams (e.g. "200 g spaghetti") for more accurate nutrition values.'
-        }
+        Tip: Enter amounts in grams (e.g. “200 g spaghetti”) for more accurate
+        nutrition values. Calculating the nutrition values takes a few seconds
+        when saving.
       </small>
       <DynamicListField
         label="Ingredients"

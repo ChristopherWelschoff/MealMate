@@ -76,7 +76,7 @@ export default function RecipeDetails({ recipes }: RecipeDetailsProps) {
         <CardTitle className="text-3xl font-bold tracking-tight text-gray-900">
           {recipe.title}
         </CardTitle>
-        <NutritionInfo />
+        <NutritionInfo nutrition={recipe.nutrition} />
 
         <CardDescription className="text-base leading-relaxed tracking-wide text-gray-600">
           <div className="flex flex-col">
