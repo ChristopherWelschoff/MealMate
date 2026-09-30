@@ -29,7 +29,13 @@ export default function CreateRecipe({
 
   return (
     <>
-      <h1 className="text-center text-2xl font-bold">Create Recipe</h1>
+      <div className="mb-4 text-center">
+        <h1 className="font-logo text-4xl text-primary">New Recipe</h1>
+        <p className="mt-1 text-xs uppercase tracking-[0.25em] text-muted-foreground">
+          Share your favorite dish
+        </p>
+      </div>
+
       <RecipeForm onSubmit={handleCreate} categories={categories} />
     </>
   );

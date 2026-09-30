@@ -6,6 +6,14 @@ import useSWR, { SWRConfig } from "swr";
 import type { Recipe, Category } from "@/types";
 import { ToastContainer, Bounce } from "react-toastify";
 
+import { Satisfy } from "next/font/google";
+
+const logoFont = Satisfy({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-satisfy",
+});
+
 const fetcher = async (url: string) => {
   const response = await fetch(url);
 
@@ -34,16 +42,19 @@ export default function App({ Component, pageProps }: AppProps) {
   } = useSWR<Recipe[]>("/api/recipes", fetcher);
   const { data: categories } = useSWR<Category[]>("/api/categories", fetcher);
 
-
   const router = useRouter();
   const isHome = router.pathname === "/";
 
   if (isHome) {
-    return <Component {...pageProps} />;
+    return (
+      <div className={logoFont.variable}>
+        <Component {...pageProps} />
+      </div>
+    );
   }
 
   return (
-    <>
+    <div className={logoFont.variable}>
       <SWRConfig value={{ fetcher }}>
         <Layout>
           <Component
@@ -68,6 +79,6 @@ export default function App({ Component, pageProps }: AppProps) {
         theme="light"
         transition={Bounce}
       />
-    </>
+    </div>
   );
 }

@@ -1,47 +1,60 @@
-import { Leaf, Heart, PlusCircle } from "lucide-react";
-import { useRouter } from "next/router";
+import { Heart, Leaf, PlusCircle, type LucideIcon } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/router";
+
+type NavItem = {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+  fillWhenActive: boolean;
+};
+
+const navItems: NavItem[] = [
+  { href: "/landingPage", label: "Recipes", icon: Leaf, fillWhenActive: true },
+  {
+    href: "/recipes/createRecipe",
+    label: "Create",
+    icon: PlusCircle,
+    fillWhenActive: false,
+  },
+  {
+    href: "/recipes/favoriteRecipes",
+    label: "Favorites",
+    icon: Heart,
+    fillWhenActive: true,
+  },
+];
+
 export default function Navbar() {
   const router = useRouter();
 
-  const isActive = (href: string) => router.pathname === href;
   return (
-    <nav className=" flex justify-evenly w-full border-t-3 p-3 mt-9 bg-white">
-      <Link href="/landingPage">
-        <div className="flex flex-col items-center">
-          <Leaf
-            className={
-              isActive("/landingPage")
-                ? "fill-green-900 stroke-black"
-                : "stroke-gray-500"
-            }
-          />
-        </div>
-      </Link>
+    <nav className="mt-9 flex w-full justify-evenly border-t border-border bg-card/90 px-3 py-2 shadow-[0_-4px_12px_rgba(0,0,0,0.04)] backdrop-blur">
+      {navItems.map(({ href, label, icon: Icon, fillWhenActive }) => {
+        const isActive = router.pathname === href;
 
-      <div className="flex flex-col items-center">
-        <Link href="/recipes/createRecipe">
-          <PlusCircle
-            className={
-              isActive("/recipes/createRecipe")
-                ? " fill-green-900 stroke-black-900"
-                : "stroke-gray-500"
-            }
-          />
-        </Link>
-      </div>
-
-      <div className="flex flex-col items-center">
-        <Link href="/recipes/favoriteRecipes">
-          <Heart
-            className={
-              isActive("/recipes/favoriteRecipes")
-                ? "fill-green-900 stroke-black"
-                : "stroke-gray-500"
-            }
-          />
-        </Link>
-      </div>
+        return (
+          <Link
+            key={href}
+            href={href}
+            aria-current={isActive ? "page" : undefined}
+            className={`flex flex-col items-center gap-1 rounded-xl px-4 py-1.5 transition ${
+              isActive
+                ? "bg-secondary text-primary"
+                : "text-muted-foreground hover:text-primary"
+            }`}
+          >
+            <Icon
+              size={22}
+              strokeWidth={isActive ? 2 : 1.6}
+              className={isActive && fillWhenActive ? "fill-primary" : ""}
+            />
+            <span className="text-[10px] font-medium uppercase tracking-[0.15em]">
+              {label}
+            </span>
+          </Link>
+        );
+      })}
     </nav>
   );
 }

@@ -33,12 +33,17 @@ export default function UpdateRecipe({
 
   return (
     <>
-      <h1 className="text-center text-2xl font-bold">Edit Recipe</h1>
+      <div className="mb-4 text-center">
+        <h1 className="font-logo text-4xl text-primary">Edit Recipe</h1>
+        <p className="mt-1 text-xs uppercase tracking-[0.25em] text-muted-foreground">
+          Update your dish
+        </p>
+      </div>
+
       <RecipeForm
-        key={recipe?._id}
-        recipe={recipe}
         onSubmit={handleUpdate}
         categories={categories}
+        recipe={recipe}
       />
     </>
   );

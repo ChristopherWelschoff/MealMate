@@ -1,14 +1,7 @@
 import { Recipe } from "@/types";
 import { useRouter } from "next/router";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import { categoryColors } from "@/lib/utils";
 import Link from "next/link";
@@ -16,6 +9,7 @@ import { Pencil, Timer } from "lucide-react";
 import DeleteRecipe from "./deleteRecipe";
 import FavoriteButton from "@/components/FavoriteButton";
 import NutritionInfo from "@/components/NutritionInfo";
+import { Leaf } from "lucide-react";
 
 type RecipeDetailsProps = {
   recipes: Recipe[];
@@ -27,82 +21,102 @@ export default function RecipeDetails({ recipes }: RecipeDetailsProps) {
   const recipe = recipes?.find((recipe) => recipe._id === id);
 
   if (!recipe) {
-    return <p>Recipe not found.</p>;
+    return (
+      <p className="mt-10 text-center text-muted-foreground">
+        Recipe not found.
+      </p>
+    );
   }
 
   return (
-    <Card className="relative mx-auto w-[95%] max-w-sm overflow-hidden border-gray-200 bg-white shadow-lg transition-shadow duration-300 hover:shadow-xl">
+    <Card className="mx-auto mb-8 w-[95%] max-w-md gap-0 overflow-hidden rounded-2xl border border-border bg-card p-0 shadow-sm">
+      {/* IMAGE */}
       <div className="relative aspect-video">
-        <div className="absolute inset-0 z-30 bg-black/25" />
         <Image
           loading="eager"
           src={recipe.imageUrl || "/assets/placeholder.svg"}
           alt={recipe.title}
           fill
-          className="z-20 object-cover transition-transform duration-300 hover:scale-105"
-          sizes="(max-width: 768px) 100vw, 768px"
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, 448px"
         />
+        <div className="absolute inset-0 bg-linear-to-t from-black/30 to-transparent" />
       </div>
 
-      <CardHeader className="space-y-4">
-        <CardAction className="flex flex-col flex-wrap gap-2">
-          {recipe.category.map((category) => (
-            <Badge
-              key={category._id}
-              variant="outline"
-              className={`border-gray-300 font-medium ${
-                categoryColors[category.name.toLowerCase()] ??
-                "bg-gray-100 text-gray-900"
-              }`}
-            >
-              {category.name}
-            </Badge>
-          ))}
-          <div className="mt-8 flex gap-4">
+      <CardHeader className="gap-4 p-5">
+        {/* CATEGORIES + ACTIONS */}
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-wrap gap-1.5">
+            {recipe.category.map((category) => (
+              <Badge
+                key={category._id}
+                variant="outline"
+                className={`rounded-full border-transparent px-2.5 text-xs ${
+                  categoryColors[category.name.toLowerCase()] ??
+                  "bg-secondary text-secondary-foreground"
+                }`}
+              >
+                {category.name}
+              </Badge>
+            ))}
+          </div>
+
+          <div className="flex shrink-0 items-center gap-3">
             <Link
-              aria-label="edit-recipe"
+              aria-label="Edit recipe"
               href={`/recipes/${recipe._id}/editRecipe`}
+              className="rounded-full p-1.5 text-primary transition hover:bg-secondary"
             >
-              <Pencil
-                size={24}
-                className="stroke-green-800 hover:fill-green-900 hover:stroke-black"
-              />
+              <Pencil size={20} />
             </Link>
             <DeleteRecipe />
             <FavoriteButton id={recipe._id} />
           </div>
-        </CardAction>
+        </div>
 
-        <CardTitle className="text-3xl font-bold tracking-tight text-gray-900">
+        {/* TITLE */}
+        <CardTitle className="text-3xl font-semibold leading-tight tracking-tight text-foreground">
           {recipe.title}
         </CardTitle>
-        <NutritionInfo nutrition={recipe.nutrition} />
 
-        <CardDescription className="text-base leading-relaxed tracking-wide text-gray-600">
-          <div className="flex flex-col">
+        {/* DESCRIPTION + DURATION */}
+        {recipe.description && (
+          <p className="text-sm leading-relaxed text-muted-foreground">
             {recipe.description}
-            <div className="mt-3 flex items-center gap-1">
-              <Timer size={16} />
-              <span>{recipe.duration} min</span>
-            </div>
-          </div>
-        </CardDescription>
+          </p>
+        )}
+        <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+          <Timer size={16} aria-hidden="true" />
+          <span>{recipe.duration} min</span>
+        </div>
+
+        <NutritionInfo nutrition={recipe.nutrition} />
       </CardHeader>
 
-      <CardContent className="space-y-8 pb-6">
+      <CardContent className="space-y-8 px-5 pb-6">
         {/* INGREDIENTS */}
         <section>
-          <h2 className="mb-3 text-xl font-semibold tracking-tight text-gray-900">
-            Ingredients:
-          </h2>
-          <ul className="space-y-2">
+          <div className="mb-3 flex items-baseline justify-between">
+            <h2 className="font-logo text-3xl text-primary">Ingredients</h2>
+            <span className="text-xs uppercase tracking-[0.15em] text-muted-foreground">
+              {recipe.ingredients.length} items
+            </span>
+          </div>
+
+          <ul className="divide-y divide-border/70 rounded-xl border border-border bg-background">
             {recipe.ingredients.map((item, index) => (
               <li
                 key={index}
-                className="flex items-center gap-3 rounded-md px-2 py-1 text-sm leading-relaxed text-gray-700 transition-colors hover:bg-gray-50"
+                className="flex items-start gap-3 px-4 py-3 text-sm leading-relaxed text-foreground"
               >
-                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-bg-button" />
-                <span>{item}</span>
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-secondary">
+                  <Leaf
+                    size={12}
+                    aria-hidden="true"
+                    className="fill-primary stroke-primary"
+                  />
+                </span>
+                <span className="pt-0.5">{item}</span>
               </li>
             ))}
           </ul>
@@ -110,19 +124,23 @@ export default function RecipeDetails({ recipes }: RecipeDetailsProps) {
 
         {/* INSTRUCTIONS */}
         <section>
-          <h2 className="mb-4 text-xl font-semibold tracking-tight text-gray-900">
-            Instructions:
-          </h2>
-          <ol className="space-y-3">
+          <div className="mb-3 flex items-baseline justify-between">
+            <h2 className="font-logo text-3xl text-primary">Instructions</h2>
+            <span className="text-xs uppercase tracking-[0.15em] text-muted-foreground">
+              {recipe.instructions.length} steps
+            </span>
+          </div>
+
+          <ol className="divide-y divide-border/70 rounded-xl border border-border bg-background">
             {recipe.instructions.map((item, index) => (
               <li
                 key={index}
-                className="flex items-center gap-4 rounded-lg border border-gray-200 bg-gray-50/50 p-4 text-sm leading-relaxed text-gray-700 shadow-sm transition-all duration-200 hover:border-gray-300 hover:bg-white hover:shadow-md"
+                className="flex items-start gap-3 px-4 py-3 text-sm leading-relaxed text-foreground"
               >
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-semibold text-white shadow-sm">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
                   {index + 1}
                 </span>
-                <span className="leading-6 tracking-wide">{item}</span>
+                <span className="pt-0.5">{item}</span>
               </li>
             ))}
           </ol>
