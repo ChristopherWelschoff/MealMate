@@ -6,6 +6,7 @@ import { Timer } from "lucide-react";
 import { categoryColors } from "@/lib/utils";
 import Link from "next/link";
 import FavoriteButton from "../FavoriteButton";
+import NutritionInfo from "../NutritionInfo";
 
 export default function RecipeCard({ ...recipe }: Recipe) {
   return (
@@ -17,7 +18,7 @@ export default function RecipeCard({ ...recipe }: Recipe) {
         <div className="relative col-span-2 ">
           <Image
             loading="eager"
-            src={recipe.imageUrl || "/assets/placeholder.svg" }
+            src={recipe.imageUrl || "/assets/placeholder.svg"}
             alt={recipe.title}
             fill
             className="object-cover"
@@ -48,7 +49,7 @@ export default function RecipeCard({ ...recipe }: Recipe) {
               ))}
             </div>
           </div>
-
+          <NutritionInfo />
           <div className=" text-sm mt-5">
             <div className="flex items-center justify-center gap-2 text-sm ">
               <Timer size={16} className=" -translate-y-px" />

@@ -15,6 +15,7 @@ import Link from "next/link";
 import { Pencil, Timer } from "lucide-react";
 import DeleteRecipe from "./deleteRecipe";
 import FavoriteButton from "@/components/FavoriteButton";
+import NutritionInfo from "@/components/NutritionInfo";
 
 type RecipeDetailsProps = {
   recipes: Recipe[];
@@ -75,6 +76,7 @@ export default function RecipeDetails({ recipes }: RecipeDetailsProps) {
         <CardTitle className="text-3xl font-bold tracking-tight text-gray-900">
           {recipe.title}
         </CardTitle>
+        <NutritionInfo />
 
         <CardDescription className="text-base leading-relaxed tracking-wide text-gray-600">
           <div className="flex flex-col">

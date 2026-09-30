@@ -26,7 +26,6 @@ export default function RecipeForm({
     recipe ? recipe.category : [],
   );
 
-
   const [fieldError, setFieldErrors] = useState({
     title: false,
     category: false,
@@ -51,7 +50,6 @@ export default function RecipeForm({
       (value) => value.trim(),
     );
 
-  
     if (ingredients.length <= 1) {
       return toast.error("Please add at least 2 ingredients");
     }
@@ -61,7 +59,6 @@ export default function RecipeForm({
     if (category.length === 0) {
       return toast.error("Please select at least one category");
     }
-
 
     formData.delete("ingredients");
     ingredients.forEach((item) => formData.append("ingredients", item));
@@ -75,14 +72,12 @@ export default function RecipeForm({
     setIsSubmitting(true);
 
     try {
-  
       const imageFile = formData.get("image") as File;
       if (imageFile.size > 0) {
         const compressedFile = await compressImage(imageFile);
         formData.set("image", compressedFile, imageFile.name);
       }
 
-  
       await onSubmit(formData);
     } catch (error) {
       console.log(error);
@@ -161,7 +156,11 @@ export default function RecipeForm({
       {fieldError.category && (
         <p className="text-sm text-red-500">This field is required</p>
       )}
-
+      <small className="text-gray-500">
+        {
+          'Tip: Enter amounts in grams (e.g. "200 g spaghetti") for more accurate nutrition values.'
+        }
+      </small>
       <DynamicListField
         label="Ingredients"
         name="ingredients"
@@ -208,7 +207,11 @@ export default function RecipeForm({
         disabled={isSubmitting}
         className="rounded-md bg-accent p-2 font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {isSubmitting ? "Saving..." : recipe ? "Save changes" : "Save Recipe"}
+        {isSubmitting
+          ? "Saving & calculating nutrition..."
+          : recipe
+            ? "Save changes"
+            : "Save Recipe"}
       </button>
 
       {recipe && (
