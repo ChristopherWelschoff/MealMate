@@ -4,6 +4,7 @@ import RecipeForm from "@/components/Form";
 import type { Category, Recipe } from "@/types";
 import { toast } from "react-toastify";
 import useSWR from "swr";
+import { Spinner } from "@/components/StateMessages";
 
 export default function UpdateRecipe({
   categories,
@@ -29,6 +30,13 @@ export default function UpdateRecipe({
     await mutate(`/api/recipe/${id}`);
     await router.push(`/recipes/${id}`);
     toast.success("Your recipe was successfully updated");
+  }
+  if (!recipe) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <Spinner />
+      </div>
+    );
   }
 
   return (
