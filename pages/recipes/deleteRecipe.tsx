@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
-import { Trash } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { mutate } from "swr";
 
 export default function DeleteRecipe() {
@@ -40,33 +40,42 @@ export default function DeleteRecipe() {
   return (
     <>
       <button
-        className="cursor-pointer"
         type="button"
         onClick={openDialog}
-        aria-label="delete-recipe"
+        aria-label="Delete recipe"
+        className="cursor-pointer rounded-full p-1.5 text-primary transition hover:bg-destructive/10 hover:text-destructive"
       >
-        <Trash className="stroke-green-800 hover:fill-green-900 hover:stroke-black" />
+        <Trash2 size={20} />
       </button>
 
       <dialog
         ref={dialogRef}
-        className="m-auto rounded-lg p-6 backdrop:bg-black/50"
+        aria-labelledby="delete-title"
+        className="m-auto w-[90%] max-w-xs rounded-2xl bg-card p-6 text-center shadow-xl backdrop:bg-black/40 backdrop:backdrop-blur-sm"
       >
-        <p className="mb-4 font-semibold">
-          Are you sure you want to delete this recipe?
+        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
+          <Trash2 size={22} className="text-destructive" aria-hidden="true" />
+        </div>
+
+        <h2 id="delete-title" className="text-lg font-semibold text-foreground">
+          Delete recipe?
+        </h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          This can&apos;t be undone.
         </p>
-        <div className="flex justify-end gap-2">
+
+        <div className="mt-6 flex gap-3">
           <button
             type="button"
             onClick={handleDelete}
-            className="rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+            className="flex-1 rounded-full bg-destructive px-4 py-2.5 text-sm font-medium text-white transition hover:bg-destructive/90"
           >
             Delete
           </button>
           <button
             type="button"
             onClick={closeDialog}
-            className="rounded px-4 py-2 hover:bg-gray-100"
+            className="flex-1 rounded-full border border-border px-4 py-2.5 text-sm font-medium text-foreground transition hover:bg-muted"
           >
             Cancel
           </button>

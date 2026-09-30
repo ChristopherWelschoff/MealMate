@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ImageIcon } from "lucide-react";
+import { ImagePlus, RefreshCw } from "lucide-react";
 
 type ImageUploadFieldProps = {
   initialImageUrl?: string;
@@ -20,32 +20,53 @@ export default function ImageUploadField({
   }
 
   return (
-    <div className="flex flex-col gap-2">
-      <label htmlFor="image" className="mb-1 block font-medium">
-        Upload Image
-      </label>
+    <div>
+      <p className="mb-1 text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground">
+        Image
+      </p>
+
       <input
         id="image"
         name="image"
         type="file"
         accept="image/*"
         onChange={handleImageChange}
-        className="file:mr-3 file:rounded-md file:border-0 file:bg-green-800 file:px-3 file:py-1 file:text-white"
+        className="peer sr-only"
       />
 
-      {imagePreview ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={imagePreview}
-          alt="Preview of selected image"
-          className="mt-2 h-40 w-full rounded-md object-cover"
-        />
-      ) : (
-        <div className="mt-2 flex h-40 w-full flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-gray-300 text-gray-400">
-          <ImageIcon size={32} />
-          <span className="text-sm">No image selected</span>
-        </div>
-      )}
+      <label
+        htmlFor="image"
+        className="group relative block h-44 w-full cursor-pointer overflow-hidden rounded-xl peer-focus-visible:ring-2 peer-focus-visible:ring-primary/40"
+      >
+        {imagePreview ? (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={imagePreview}
+              alt="Preview of selected image"
+              className="h-full w-full object-cover"
+            />
+            <span className="absolute inset-0 flex items-center justify-center gap-2 bg-black/40 text-sm font-medium text-white opacity-0 transition group-hover:opacity-100">
+              <RefreshCw size={16} aria-hidden="true" />
+              Change image
+            </span>
+          </>
+        ) : (
+          <span className="flex h-full w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-primary/30 bg-secondary/40 text-muted-foreground transition group-hover:border-primary group-hover:bg-secondary">
+            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-card shadow-sm">
+              <ImagePlus
+                size={22}
+                className="text-primary"
+                aria-hidden="true"
+              />
+            </span>
+            <span className="text-sm font-medium text-primary">
+              Upload image
+            </span>
+            <span className="text-xs">Tap to choose a photo</span>
+          </span>
+        )}
+      </label>
     </div>
   );
 }

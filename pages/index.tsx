@@ -125,7 +125,7 @@ const ingredients: FloatingIngredient[] = [
 export default function WelcomePage() {
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_50%_40%,#ecfdf3,#fafaf7_70%)] px-4">
-      {/*Flying ingredients*/}
+      {/* Flying ingredients */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         {ingredients.map(
           (
@@ -160,7 +160,7 @@ export default function WelcomePage() {
                 },
               }}
             >
-              <Icon size={size} strokeWidth={1.4} className="text-green-800" />
+              <Icon size={size} strokeWidth={1.4} className="text-primary" />
             </motion.div>
           ),
         )}
@@ -169,7 +169,7 @@ export default function WelcomePage() {
       {/* Logo */}
       <div className="relative flex items-center justify-center">
         <motion.div
-          className="absolute size-32 rounded-full bg-green-100"
+          className="absolute size-32 rounded-full bg-secondary"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 0.8, scale: [0.8, 1, 1.05, 1] }}
           transition={{
@@ -192,14 +192,14 @@ export default function WelcomePage() {
               delay: 1.3,
             }}
           >
-            <Leaf size={64} className="fill-green-900 stroke-green-900" />
+            <Leaf size={64} className="fill-primary stroke-primary" />
           </motion.div>
         </motion.div>
       </div>
 
       {/* Title */}
       <motion.h1
-        className={`${logoFont.className} relative mt-6 text-6xl text-green-900`}
+        className="relative mt-6 font-logo text-6xl text-primary"
         initial={{ opacity: 0, y: 10, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 1.1, ease: "easeOut", delay: 1 }}
@@ -209,7 +209,7 @@ export default function WelcomePage() {
 
       {/* Divider line */}
       <motion.div
-        className="relative mt-3 h-px w-20 bg-green-800/60"
+        className="relative mt-3 h-px w-20 bg-primary/60"
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
         transition={{ duration: 0.8, ease: "easeInOut", delay: 1.7 }}
@@ -217,7 +217,7 @@ export default function WelcomePage() {
 
       {/* Slogan */}
       <motion.p
-        className="relative mt-4 text-sm uppercase tracking-[0.25em] text-gray-500"
+        className="relative mt-4 text-sm uppercase tracking-[0.25em] text-muted-foreground"
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut", delay: 2 }}
@@ -234,9 +234,9 @@ export default function WelcomePage() {
       >
         <Link
           href="/landingPage"
-          className="inline-block rounded-full bg-green-900 px-10 py-3 text-sm font-medium uppercase tracking-[0.15em] text-white shadow-md transition hover:bg-green-800 hover:shadow-lg"
+          className="inline-block rounded-full bg-primary px-10 py-3 text-sm font-medium uppercase tracking-[0.15em] text-primary-foreground shadow-md transition hover:bg-primary/90 hover:shadow-lg"
         >
-          {`Lets cook`}
+          Let&apos;s cook
         </Link>
       </motion.div>
     </main>

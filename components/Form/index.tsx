@@ -13,6 +13,11 @@ type RecipeFormProps = {
   recipe?: Recipe;
 };
 
+const labelClass =
+  "mb-1 block text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground";
+const inputClass =
+  "w-full rounded-lg border border-border bg-card p-2.5 text-sm text-foreground shadow-sm transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20";
+
 export default function RecipeForm({
   recipe,
   onSubmit,
@@ -90,10 +95,11 @@ export default function RecipeForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="mx-auto flex w-[95%] max-w-md flex-col gap-4"
+      className="mx-auto mb-8 flex w-[95%] max-w-md flex-col gap-5 rounded-2xl bg-card p-5 shadow-sm"
     >
+      {/* Title */}
       <div>
-        <label htmlFor="title" className="mb-1 block font-medium">
+        <label htmlFor="title" className={labelClass}>
           Title*
         </label>
         <input
@@ -102,76 +108,97 @@ export default function RecipeForm({
           id="title"
           name="title"
           type="text"
-          className={`${fieldError.title ? "border-red-500" : ""} w-full rounded-md border p-2`}
+          className={`${inputClass} ${fieldError.title ? "border-destructive" : ""}`}
           placeholder="Recipe title"
           required
           defaultValue={recipe?.title}
         />
         {fieldError.title && (
-          <p className="text-sm text-red-500">This field is required</p>
+          <p className="mt-1 text-xs text-destructive">
+            This field is required
+          </p>
         )}
       </div>
 
-      <div className="flex flex-col items-end justify-center">
-        <label
-          htmlFor="description"
-          className="mb-1 block self-start font-medium"
-        >
+      {/* Description */}
+      <div>
+        <label htmlFor="description" className={labelClass}>
           Description
         </label>
         <textarea
           onChange={(event) => setLetterCount(event.target.value.length)}
-          rows={5}
+          rows={4}
           id="description"
           name="description"
-          className="w-full rounded-md border p-2"
+          className={inputClass}
           placeholder="Recipe description"
           maxLength={150}
           defaultValue={recipe?.description}
         />
-
-        <small className="m-2">{150 - letterCount} letters left</small>
+        <small className="mt-1 block text-right text-xs text-muted-foreground">
+          {150 - letterCount} letters left
+        </small>
       </div>
 
+      {/* Image */}
       <ImageUploadField initialImageUrl={recipe?.imageUrl} />
 
-      <label className="mb-1 block font-medium">
-        Category* <small>(at least one)</small>
-      </label>
-      <Select
-        instanceId="category-select"
-        isMulti
-        id="category"
-        name="category"
-        className="basic-multi-select"
-        classNamePrefix="select"
-        options={categories}
-        getOptionLabel={(category) => category.name}
-        getOptionValue={(category) => category._id}
-        value={category}
-        onChange={(selected) => setCategory([...selected])}
-        placeholder="Please Select a Category"
-        isOptionDisabled={() => category.length >= 2}
-      />
-      {fieldError.category && (
-        <p className="text-sm text-red-500">This field is required</p>
-      )}
-      <small className="text-gray-500">
-        Tip: Enter amounts in grams (e.g. “200 g spaghetti”) for more accurate
-        nutrition values. Calculating the nutrition values takes a few seconds
-        when saving.
-      </small>
-      <DynamicListField
-        label="Ingredients"
-        name="ingredients"
-        itemLabel="Ingredient"
-        minFields={2}
-        initialValues={recipe?.ingredients}
-        hasError={fieldError.ingredients}
-        errorMessage="At least 2 ingredients are required"
-        onBlur={handleBlur}
-      />
+      {/* Category */}
+      <div>
+        <label htmlFor="category" className={labelClass}>
+          Category*{" "}
+          <span className="normal-case tracking-normal">(max. 2)</span>
+        </label>
+        <Select
+          instanceId="category-select"
+          inputId="category"
+          isMulti
+          name="category"
+          options={categories}
+          getOptionLabel={(category) => category.name}
+          getOptionValue={(category) => category._id}
+          value={category}
+          onChange={(selected) => setCategory([...selected])}
+          placeholder="Select a category"
+          isOptionDisabled={() => category.length >= 2}
+          theme={(theme) => ({
+            ...theme,
+            borderRadius: 8,
+            colors: {
+              ...theme.colors,
+              primary: "#14532d",
+              primary25: "#f0fdf4",
+              primary50: "#dcfce7",
+              neutral20: "#e5e7eb",
+            },
+          })}
+        />
+        {fieldError.category && (
+          <p className="mt-1 text-xs text-destructive">
+            This field is required
+          </p>
+        )}
+      </div>
 
+      {/* Ingredients */}
+      <div>
+        <DynamicListField
+          label="Ingredients"
+          name="ingredients"
+          itemLabel="Ingredient"
+          minFields={2}
+          initialValues={recipe?.ingredients}
+          hasError={fieldError.ingredients}
+          errorMessage="At least 2 ingredients are required"
+          onBlur={handleBlur}
+        />
+        <small className="mt-1 block text-xs text-muted-foreground">
+          Tip: Enter amounts in grams (e.g. “200 g spaghetti”) for more accurate
+          nutrition values. Calculating them takes a few seconds when saving.
+        </small>
+      </div>
+
+      {/* Instructions */}
       <DynamicListField
         label="Instructions"
         name="instructions"
@@ -183,45 +210,52 @@ export default function RecipeForm({
         onBlur={handleBlur}
       />
 
+      {/* Duration */}
       <div>
-        <label htmlFor="duration" className="mb-1 block font-medium">
-          Duration*
+        <label htmlFor="duration" className={labelClass}>
+          Duration (min)*
         </label>
         <input
           id="duration"
           name="duration"
           type="number"
-          className={`${fieldError.duration ? "border-red-500" : ""} w-full rounded-md border p-2`}
+          min={1}
+          className={`${inputClass} ${fieldError.duration ? "border-destructive" : ""}`}
           placeholder="30"
           required
           onBlur={(event) => handleBlur(event.target.value, "duration")}
           defaultValue={recipe?.duration}
         />
         {fieldError.duration && (
-          <p className="text-sm text-red-500">This field is required</p>
+          <p className="mt-1 text-xs text-destructive">
+            This field is required
+          </p>
         )}
       </div>
 
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="rounded-md bg-accent p-2 font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        {isSubmitting
-          ? "Saving & calculating nutrition..."
-          : recipe
-            ? "Save changes"
-            : "Save Recipe"}
-      </button>
-
-      {recipe && (
-        <Link
-          href={`/recipes/${recipe._id}`}
-          className="w-full rounded-md bg-accent p-2 text-center font-medium text-white"
+      {/* Buttons */}
+      <div className="mt-2 flex flex-col gap-3">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="rounded-full bg-primary px-6 py-3 text-sm font-medium uppercase tracking-[0.15em] text-primary-foreground shadow-md transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Back
-        </Link>
-      )}
+          {isSubmitting
+            ? "Saving & calculating nutrition..."
+            : recipe
+              ? "Save changes"
+              : "Save recipe"}
+        </button>
+
+        {recipe && (
+          <Link
+            href={`/recipes/${recipe._id}`}
+            className="rounded-full border border-primary px-6 py-3 text-center text-sm font-medium uppercase tracking-[0.15em] text-primary transition hover:bg-secondary"
+          >
+            Back
+          </Link>
+        )}
+      </div>
     </form>
   );
 }

@@ -1,38 +1,51 @@
-import { AlertCircleIcon } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle, Loader2 } from "lucide-react";
 
- function AlertDestructive() {
+function AlertDestructive() {
   return (
-    <Alert variant="destructive" className="max-w-md">
-      <AlertCircleIcon />
-      <AlertTitle>Error loading Recipes</AlertTitle>
-      <AlertDescription>
-        The recipes could not be loaded. Please check your network connection.
-      </AlertDescription>
-    </Alert>
-  );
-}
+    <div
+      role="alert"
+      className="flex w-full max-w-sm flex-col items-center rounded-2xl border border-border bg-card p-6 text-center shadow-sm"
+    >
+      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
+        <AlertCircle
+          size={24}
+          className="text-destructive"
+          aria-hidden="true"
+        />
+      </div>
 
-import { cn } from "cn";
-import { LoaderIcon } from "lucide-react";
+      <h2 className="text-lg font-semibold text-foreground">
+        Couldn&apos;t load recipes
+      </h2>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Please check your connection and try again.
+      </p>
 
- function Spinner({ className, ...props }: React.ComponentProps<"svg">) {
-  return (
-    <LoaderIcon
-      role="status"
-      aria-label="Loading"
-      className={cn("size-4 animate-spin", className)}
-      {...props}
-    />
-  );
-}
-
- function SpinnerCustom() {
-  return (
-    <div className="flex items-center gap-4">
-      <Spinner />
+      <button
+        type="button"
+        onClick={() => window.location.reload()}
+        className="mt-5 rounded-full bg-primary px-6 py-2.5 text-sm font-medium uppercase tracking-[0.15em] text-primary-foreground shadow-md transition hover:bg-primary/90"
+      >
+        Try again
+      </button>
     </div>
   );
 }
 
-export { AlertDestructive, Spinner, SpinnerCustom };
+function Spinner({ className = "", ...props }: React.ComponentProps<"svg">) {
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <Loader2
+        role="status"
+        aria-label="Loading"
+        className={`size-8 animate-spin text-primary ${className}`}
+        {...props}
+      />
+      <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">
+        Loading recipes
+      </p>
+    </div>
+  );
+}
+
+export { AlertDestructive, Spinner };

@@ -14,11 +14,12 @@ type FilterCarouselProps = {
 };
 
 function getChipClasses(isActive: boolean) {
-  return `cursor-pointer whitespace-nowrap rounded-full border px-4 py-1 text-sm transition-colors ${
-    isActive
-      ? "border-green-800 bg-green-800 text-white"
-      : "border-gray-400 hover:bg-green-800/10"
-  }`;
+  const base =
+    "whitespace-nowrap rounded-full border px-4 py-1.5 text-sm font-medium transition";
+
+  return isActive
+    ? `${base} border-primary bg-primary text-primary-foreground shadow-sm`
+    : `${base} border-border bg-card text-muted-foreground hover:border-primary/40 hover:bg-secondary hover:text-primary`;
 }
 
 export default function FilterCarousel({

@@ -1,6 +1,8 @@
 import RecipeList from "@/components/RecipeList";
 import useFavorites from "@/hooks/useFavorites";
 import { Category, Recipe } from "@/types";
+import { Heart } from "lucide-react";
+import Link from "next/link";
 
 type FavoriteRecipesProps = {
   recipes?: Recipe[];
@@ -21,18 +23,38 @@ export default function FavoriteRecipes({
     favoriteIds.includes(recipe._id),
   );
 
-  if (!isLoading && !error && favoriteRecipes?.length === 0) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center px-4">
-        <p className="text-xl">No favorites yet- go find some tasty ones!</p>
-      </div>
-    );
-  }
+  const hasNoFavorites = !isLoading && !error && favoriteRecipes?.length === 0;
 
   return (
     <>
-      <h1 className="text-center font-bold text-2xl">Favorites</h1>
-      <RecipeList categories={categories} recipes={favoriteRecipes} />
+      <div className="mb-4 text-center">
+        <h1 className="font-logo text-4xl text-primary">Favorites</h1>
+        <p className="mt-1 text-xs uppercase tracking-[0.25em] text-muted-foreground">
+          Your saved recipes
+        </p>
+      </div>
+
+      {hasNoFavorites ? (
+        <div className="flex min-h-[50vh] flex-col items-center justify-center px-6 text-center">
+          <div className="mb-5 flex h-24 w-24 items-center justify-center rounded-full bg-secondary">
+            <Heart size={40} strokeWidth={1.5} className="stroke-primary" />
+          </div>
+
+          <h2 className="font-logo text-3xl text-primary">No favorites yet</h2>
+          <p className="mt-2 max-w-xs text-sm text-muted-foreground">
+            Tap the heart on any recipe to save it here.
+          </p>
+
+          <Link
+            href="/landingPage"
+            className="mt-6 rounded-full bg-primary px-6 py-3 text-sm font-medium uppercase tracking-[0.15em] text-primary-foreground shadow-md transition hover:bg-primary/90"
+          >
+            Find recipes
+          </Link>
+        </div>
+      ) : (
+        <RecipeList categories={categories} recipes={favoriteRecipes} />
+      )}
     </>
   );
 }
