@@ -3,6 +3,7 @@ import dbConnect from "@/db/connect";
 import Recipe from "@/db/schemas/Recipe";
 import { parseForm } from "@/lib/parseForm";
 import { uploadToCloudinary } from "@/lib/cloudinary";
+import { calculateNutrition } from "@/lib/nutrition";
 
 export const config = {
   api: {
@@ -43,20 +44,24 @@ export default async function handler(
       const { fields, files } = await parseForm(req);
 
       const imageFile = files.image?.[0];
-      let imageUrl: string | undefined;
+      const ingredients = fields.ingredients ?? [];
 
-      if (imageFile && imageFile.size > 0) {
-        imageUrl = await uploadToCloudinary(imageFile.filepath);
-      }
+      const [imageUrl, nutrition] = await Promise.all([
+        imageFile && imageFile.size > 0
+          ? uploadToCloudinary(imageFile.filepath)
+          : Promise.resolve(undefined),
+        calculateNutrition(ingredients),
+      ]);
 
       const recipeData = {
         title: fields.title?.[0],
         description: fields.description?.[0],
-        ingredients: fields.ingredients ?? [],
+        ingredients,
         instructions: fields.instructions ?? [],
         category: fields.category ?? [],
         duration: Number(fields.duration?.[0]),
         imageUrl,
+        nutrition: nutrition ?? undefined,
       };
 
       await Recipe.create(recipeData);
