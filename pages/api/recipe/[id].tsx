@@ -3,6 +3,7 @@ import dbConnect from "@/db/connect";
 import Recipe from "@/db/schemas/Recipe";
 import { parseForm } from "@/lib/parseForm";
 import { uploadToCloudinary } from "@/lib/cloudinary";
+import { calculateNutrition } from "@/lib/nutrition";
 
 export const config = {
   api: {
@@ -43,15 +44,31 @@ export default async function handler(
   if (req.method === "PUT") {
     try {
       const { fields, files } = await parseForm(req);
+      const existingRecipe = await Recipe.findById(id);
+
+      if (!existingRecipe) {
+        return res.status(404).json({ error: "Recipe not found" });
+      }
+      const newIngredients = fields.ingredients ?? [];
+      const ingredientsChanged =
+        JSON.stringify(newIngredients) !==
+        JSON.stringify(existingRecipe.ingredients);
 
       const updateData: Record<string, unknown> = {
         title: fields.title?.[0],
         description: fields.description?.[0],
-        ingredients: fields.ingredients ?? [],
+        ingredients: newIngredients,
         instructions: fields.instructions ?? [],
         category: fields.category ?? [],
         duration: Number(fields.duration?.[0]),
       };
+
+      if (ingredientsChanged) {
+        const nutrition = await calculateNutrition(newIngredients);
+        if (nutrition) {
+          updateData.nutrition = nutrition;
+        }
+      }
 
       const imageFile = files.image?.[0];
       if (imageFile && imageFile.size > 0) {
