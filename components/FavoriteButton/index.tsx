@@ -21,12 +21,12 @@ export default function FavoriteButton({ id }: FavoriteButtonProps) {
       type="button"
       onClick={handleClick}
       aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
-      className="shrink-0 cursor-pointer"
+      aria-pressed={favorite}
+      className="shrink-0 cursor-pointer rounded-full p-1.5 text-primary transition hover:bg-secondary active:scale-90"
     >
       <Heart
-        className={`stroke-green-800 transition-colors ${
-          favorite ? "fill-green-800" : "fill-none hover:fill-green-800/30"
-        }`}
+        size={20}
+        className={`transition-colors ${favorite ? "fill-primary" : "fill-none"}`}
       />
     </button>
   );

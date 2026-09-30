@@ -109,6 +109,20 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* Toasts */
+  --toastify-font-family: var(--font-sans);
+  --toastify-toast-bd-radius: 1rem;
+  --toastify-color-light: #ffffff;
+  --toastify-text-color-light: #1f2937;
+
+  --toastify-color-success: #14532d;
+  --toastify-icon-color-success: #14532d;
+  --toastify-color-progress-success: #14532d;
+
+  --toastify-color-error: oklch(0.577 0.245 27.325);
+  --toastify-icon-color-error: oklch(0.577 0.245 27.325);
+  --toastify-color-progress-error: oklch(0.577 0.245 27.325);
 }
 
 .dark {

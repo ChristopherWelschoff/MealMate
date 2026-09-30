@@ -4,7 +4,7 @@ import Layout from "@/components/Layout";
 import { useRouter } from "next/router";
 import useSWR, { SWRConfig } from "swr";
 import type { Recipe, Category } from "@/types";
-import { ToastContainer, Bounce } from "react-toastify";
+import { ToastContainer, Slide } from "react-toastify";
 
 import { Satisfy } from "next/font/google";
 
@@ -67,17 +67,14 @@ export default function App({ Component, pageProps }: AppProps) {
         </Layout>
       </SWRConfig>
       <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
+        position="bottom-center"
+        autoClose={2500}
+        hideProgressBar
+        closeOnClick
         pauseOnHover
         theme="light"
-        transition={Bounce}
+        transition={Slide}
+        toastClassName="!shadow-lg !border !border-border !text-sm"
       />
     </div>
   );
