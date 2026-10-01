@@ -7,7 +7,6 @@ import { calculateNutrition } from "@/lib/nutrition";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 
-
 export const config = {
   api: {
     bodyParser: false,
@@ -58,9 +57,13 @@ export default async function handler(
         return res.status(404).json({ error: "Recipe not found" });
       }
 
-      const isOwner = existingRecipe.owner === session.user?.email;
-      const isAdmin = session.user?.email === process.env.ADMIN_EMAIL;
-      if (!isOwner && !isAdmin) {
+      const isOwner = existingRecipe.owner === session.user.email;
+      const isAdmin = session.user.email === process.env.ADMIN_EMAIL;
+      const isPrivate = existingRecipe.isPrivate === true;
+      const isPending = existingRecipe.isApproved === false;
+      const ownerMayEdit = isOwner && (isPrivate || isPending);
+
+      if (!ownerMayEdit && !isAdmin) {
         return res.status(403).json({ message: "Not allowed" });
       }
 
@@ -145,7 +148,11 @@ export default async function handler(
 
       const isOwner = existingRecipe.owner === session.user.email;
       const isAdmin = session.user.email === process.env.ADMIN_EMAIL;
-      if (!isOwner && !isAdmin) {
+      const isPrivate = existingRecipe.isPrivate === true;
+      const isPending = existingRecipe.isApproved === false;
+      const ownerMayEdit = isOwner && (isPrivate || isPending);
+
+      if (!ownerMayEdit && !isAdmin) {
         return res.status(403).json({ message: "Not allowed" });
       }
 
