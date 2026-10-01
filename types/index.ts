@@ -13,6 +13,8 @@ export type Recipe = {
   owner?: string;
   isApproved?: boolean;
   ownerName?: string;
+  isPrivate?: boolean;
+  copiedFrom?: string;
 };
 
 export type Category = {

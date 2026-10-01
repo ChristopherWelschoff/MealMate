@@ -69,6 +69,15 @@ const recipeSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    isPrivate: {
+      type: Boolean,
+      default: false,
+    },
+    copiedFrom: {
+      type: Schema.Types.ObjectId,
+      ref: "Recipe",
+      required: false,
+    },
   },
   {
     timestamps: true,

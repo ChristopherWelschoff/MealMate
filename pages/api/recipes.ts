@@ -27,7 +27,10 @@ export default async function handler(
 
   if (req.method === "GET") {
     try {
-      const recipes = await Recipe.find({ isApproved: { $ne: false } })
+      const recipes = await Recipe.find({
+        isApproved: { $ne: false },
+        isPrivate: { $ne: true },
+      })
         .sort({ createdAt: -1 })
         .populate({
           path: "category",
@@ -73,7 +76,7 @@ export default async function handler(
         imageUrl,
         nutrition: nutrition ?? undefined,
         owner: session.user?.email,
-        ownerName: session?.user?.name
+        ownerName: session?.user?.name,
       };
 
       await Recipe.create(recipeData);
