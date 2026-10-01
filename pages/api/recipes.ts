@@ -5,7 +5,6 @@ import { parseForm } from "@/lib/parseForm";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import { calculateNutrition } from "@/lib/nutrition";
 import { getServerSession } from "next-auth";
-import { AuthOptions } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
 
 export const config = {
@@ -46,7 +45,7 @@ export default async function handler(
     try {
       const session = await getServerSession(req, res, authOptions);
       if (!session) {
-        return res.status(401).json({ message:"Please login" });
+        return res.status(401).json({ message: "Please login" });
       }
       const { fields, files } = await parseForm(req);
 
