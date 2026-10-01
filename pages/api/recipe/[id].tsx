@@ -4,6 +4,8 @@ import Recipe from "@/db/schemas/Recipe";
 import { parseForm } from "@/lib/parseForm";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import { calculateNutrition } from "@/lib/nutrition";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]";
 
 export const config = {
   api: {
@@ -43,6 +45,10 @@ export default async function handler(
 
   if (req.method === "PUT") {
     try {
+      const session = await getServerSession(req, res, authOptions);
+      if (!session) {
+        return res.status(401).json({ message: "Please login" });
+      }
       const { fields, files } = await parseForm(req);
       const existingRecipe = await Recipe.findById(id);
 
@@ -89,6 +95,10 @@ export default async function handler(
 
   if (req.method === "DELETE") {
     try {
+      const session = await getServerSession(req, res, authOptions);
+      if (!session) {
+        return res.status(401).json({ message: "Please login" });
+      }
       await Recipe.findByIdAndDelete(id);
       return res.status(200).json({ status: `Recipe ${id} deleted` });
     } catch (error) {
