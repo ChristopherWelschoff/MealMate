@@ -46,7 +46,8 @@ export default async function handler(
   if (req.method === "PUT") {
     try {
       const session = await getServerSession(req, res, authOptions);
-      if (!session) {
+
+      if (!session?.user?.email) {
         return res.status(401).json({ message: "Please login" });
       }
       const { fields, files } = await parseForm(req);
@@ -55,6 +56,13 @@ export default async function handler(
       if (!existingRecipe) {
         return res.status(404).json({ error: "Recipe not found" });
       }
+
+      const isOwner = existingRecipe.owner === session.user?.email;
+      const isAdmin = session.user?.email === process.env.ADMIN_EMAIL;
+      if (!isOwner && !isAdmin) {
+        return res.status(403).json({ message: "Not allowed" });
+      }
+
       const newIngredients = fields.ingredients ?? [];
       const ingredientsChanged =
         JSON.stringify(newIngredients) !==
@@ -96,9 +104,21 @@ export default async function handler(
   if (req.method === "DELETE") {
     try {
       const session = await getServerSession(req, res, authOptions);
-      if (!session) {
+      if (!session?.user?.email) {
         return res.status(401).json({ message: "Please login" });
       }
+
+      const existingRecipe = await Recipe.findById(id);
+      if (!existingRecipe) {
+        return res.status(404).json({ error: "Recipe not found" });
+      }
+
+      const isOwner = existingRecipe.owner === session.user.email;
+      const isAdmin = session.user.email === process.env.ADMIN_EMAIL;
+      if (!isOwner && !isAdmin) {
+        return res.status(403).json({ message: "Not allowed" });
+      }
+
       await Recipe.findByIdAndDelete(id);
       return res.status(200).json({ status: `Recipe ${id} deleted` });
     } catch (error) {
