@@ -47,6 +47,9 @@ export default async function handler(
       if (!session) {
         return res.status(401).json({ message: "Please login" });
       }
+      if (!session?.user?.email) {
+        return res.status(401).json({ message: "Please login" });
+      }
       const { fields, files } = await parseForm(req);
 
       const imageFile = files.image?.[0];
@@ -68,6 +71,7 @@ export default async function handler(
         duration: Number(fields.duration?.[0]),
         imageUrl,
         nutrition: nutrition ?? undefined,
+        owner: session.user?.email,
       };
 
       await Recipe.create(recipeData);

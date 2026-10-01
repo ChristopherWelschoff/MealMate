@@ -55,6 +55,11 @@ const recipeSchema = new Schema(
       carbs: { type: Number },
       fat: { type: Number },
     },
+    owner: {
+      type: String,
+      required: false,
+      trim: true,
+    },
   },
   {
     timestamps: true,

@@ -10,6 +10,7 @@ export type Recipe = {
   createdAt: string;
   updatedAt: string;
   nutrition?: Nutrition;
+  owner?: string;
 };
 
 export type Category = {
