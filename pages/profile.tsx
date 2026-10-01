@@ -1,5 +1,6 @@
 import { Spinner } from "@/components/StateMessages";
 import { useSession, signIn, signOut } from "next-auth/react";
+import Button, { ButtonLink } from "@/components/Button";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
@@ -28,9 +29,8 @@ export default function ProfilePage() {
       </div>
     );
   }
-
   return (
-    <>
+    <div className="flex min-h-[80vh] flex-col px-4">
       <div className="mb-4 text-center">
         <h1 className="font-logo text-4xl text-primary">
           {session.user?.name}
@@ -39,15 +39,19 @@ export default function ProfilePage() {
           {session.user?.email}
         </p>
       </div>
-      <div className=" text-center">
-        <button
-          onClick={() => signOut()}
-          type="button"
-          className=" my-5 rounded-full bg-primary px-6 py-3 text-sm font-medium uppercase tracking-[0.15em] text-primary-foreground shadow-md transition hover:bg-primary/90"
-        >
+
+      {/* Hier kommen am Montag deine eigenen Rezepte hin */}
+
+      <div className="mx-auto mt-auto flex w-full max-w-xs flex-col gap-3 pb-6">
+        {session.user?.isAdmin && (
+          <ButtonLink href="/admin" variant="outline">
+            Admin
+          </ButtonLink>
+        )}
+        <Button variant="primary" onClick={() => signOut()}>
           Logout
-        </button>
+        </Button>
       </div>
-    </>
+    </div>
   );
 }

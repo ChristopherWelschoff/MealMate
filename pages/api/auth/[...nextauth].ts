@@ -8,6 +8,14 @@ export const authOptions: AuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
+  callbacks: {
+    async session({ session }) {
+      if (session.user) {
+        session.user.isAdmin = session.user.email === process.env.ADMIN_EMAIL;
+      }
+      return session;
+    },
+  },
 };
 
 export default NextAuth(authOptions);
