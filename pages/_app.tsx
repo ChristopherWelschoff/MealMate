@@ -75,7 +75,7 @@ export default function App({
           </Layout>
         </SWRConfig>
         <ToastContainer
-          position="bottom-center"
+          position="top-center"
           autoClose={2500}
           hideProgressBar
           closeOnClick
