@@ -7,6 +7,7 @@ import { calculateNutrition } from "@/lib/nutrition";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 
+
 export const config = {
   api: {
     bodyParser: false,

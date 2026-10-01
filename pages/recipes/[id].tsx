@@ -10,17 +10,27 @@ import DeleteRecipe from "./deleteRecipe";
 import FavoriteButton from "@/components/FavoriteButton";
 import NutritionInfo from "@/components/NutritionInfo";
 import { Leaf } from "lucide-react";
+import useSWR from "swr";
+import { Spinner } from "@/components/StateMessages";
 
-type RecipeDetailsProps = {
-  recipes: Recipe[];
-};
-
-export default function RecipeDetails({ recipes }: RecipeDetailsProps) {
+export default function RecipeDetails() {
   const router = useRouter();
   const { id } = router.query;
-  const recipe = recipes?.find((recipe) => recipe._id === id);
+  const {
+    data: recipe,
+    error,
+    isLoading,
+  } = useSWR<Recipe>(id ? `/api/recipe/${id}` : null);
 
-  if (!recipe) {
+  if (isLoading || !id) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (error || !recipe) {
     return (
       <p className="mt-10 text-center text-muted-foreground">
         Recipe not found.
