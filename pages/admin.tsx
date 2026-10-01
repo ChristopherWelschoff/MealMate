@@ -1,7 +1,7 @@
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import type { Recipe } from "@/types";
 import { Spinner } from "@/components/StateMessages";
-import { toast } from "react-toastify";
+
 import RecipeCard from "@/components/RecipeCard";
 import { approveRecipe } from "@/lib/approveRecipe";
 
@@ -10,7 +10,6 @@ export default function AdminPage() {
     data: pendingRecipes,
     error,
     isLoading,
-    mutate: mutatePending,
   } = useSWR<Recipe[]>("/api/admin/pending");
 
   if (isLoading) {

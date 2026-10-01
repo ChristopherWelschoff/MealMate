@@ -73,6 +73,7 @@ export default async function handler(
         imageUrl,
         nutrition: nutrition ?? undefined,
         owner: session.user?.email,
+        ownerName: session?.user?.name
       };
 
       await Recipe.create(recipeData);

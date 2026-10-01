@@ -60,6 +60,11 @@ const recipeSchema = new Schema(
       required: false,
       trim: true,
     },
+    ownerName: {
+      type: String,
+      required: false,
+      trim: true,
+    },
     isApproved: {
       type: Boolean,
       default: false,

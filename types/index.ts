@@ -12,6 +12,7 @@ export type Recipe = {
   nutrition?: Nutrition;
   owner?: string;
   isApproved?: boolean;
+  ownerName?: string;
 };
 
 export type Category = {

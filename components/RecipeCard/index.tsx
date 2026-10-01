@@ -38,7 +38,6 @@ export default function RecipeCard({ ...recipe }: Recipe) {
               <FavoriteButton id={recipe._id} />
             </div>
           </div>
-
           <div className="flex flex-wrap gap-1.5">
             {recipe.category.map((category) => (
               <Badge
@@ -53,13 +52,14 @@ export default function RecipeCard({ ...recipe }: Recipe) {
               </Badge>
             ))}
           </div>
-
           <NutritionInfo nutrition={recipe.nutrition} />
-
           <div className="mt-auto flex items-center gap-1.5 text-xs text-muted-foreground">
             <Timer size={14} aria-hidden="true" />
             <span>{recipe.duration} min</span>
-          </div>
+          </div>{" "}
+          <small className="text-xs text-muted-foreground">
+            by {recipe.ownerName || "MealMate"}
+          </small>
         </CardHeader>
       </Card>
     </Link>

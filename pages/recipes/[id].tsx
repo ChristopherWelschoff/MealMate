@@ -112,6 +112,9 @@ export default function RecipeDetails() {
         </div>
 
         <NutritionInfo nutrition={recipe.nutrition} />
+        <small className="text-xs text-muted-foreground">
+          by {recipe.ownerName || "MealMate"}
+        </small>
       </CardHeader>
 
       <CardContent className="space-y-8 px-5 pb-6">
