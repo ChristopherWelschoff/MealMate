@@ -1,9 +1,15 @@
 import { Spinner } from "@/components/StateMessages";
 import { useSession, signIn, signOut } from "next-auth/react";
 import Button, { ButtonLink } from "@/components/Button";
+import type { Recipe } from "@/types";
+import useSWR from "swr";
+import RecipeCard from "@/components/RecipeCard";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
+  const { data: myRecipes } = useSWR<Recipe[]>(
+    status === "authenticated" ? "/api/my-recipes" : null,
+  );
 
   if (status === "loading") {
     return (
@@ -40,9 +46,27 @@ export default function ProfilePage() {
         </p>
       </div>
 
-      {/* Hier kommen am Montag deine eigenen Rezepte hin */}
+      <section className="mx-auto mt-6 w-full max-w-md">
+        <h2 className="text-center mb-3 font-logo text-3xl text-primary">
+          My recipes
+        </h2>
 
-      <div className="mx-auto mt-auto flex w-full max-w-xs flex-col gap-3 pb-6">
+        {myRecipes?.length === 0 && (
+          <p className="text-sm text-muted-foreground">
+            No recipes yet. Create one or customize a recipe you like.
+          </p>
+        )}
+
+        <ul className="flex flex-col gap-3">
+          {myRecipes?.map((recipe) => (
+            <li key={recipe._id}>
+              <RecipeCard {...recipe} />
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <div className="mx-auto mt-3 flex w-full max-w-xs flex-col gap-3 pb-6">
         {session.user?.isAdmin && (
           <ButtonLink href="/admin" variant="outline">
             Admin

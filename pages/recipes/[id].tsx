@@ -124,7 +124,11 @@ export default function RecipeDetails() {
                 >
                   <Pencil size={20} />
                 </Link>
-                <DeleteRecipe />
+                <DeleteRecipe
+                  redirectTo={
+                    isPrivate || isPending ? "/profile" : "/landingPage"
+                  }
+                />
               </>
             )}
             <FavoriteButton id={recipe._id} />
@@ -136,9 +140,6 @@ export default function RecipeDetails() {
           <CardTitle className="text-3xl font-semibold leading-tight tracking-tight text-foreground">
             {recipe.title}
           </CardTitle>
-          <small className="text-xs text-muted-foreground">
-            by {recipe.ownerName || "MealMate"}
-          </small>
         </div>
 
         {/* DESCRIPTION + DURATION */}
@@ -153,6 +154,9 @@ export default function RecipeDetails() {
         </div>
 
         <NutritionInfo nutrition={recipe.nutrition} />
+        <small className="text-xs text-muted-foreground">
+          by {recipe.ownerName || "MealMate"}
+        </small>
 
         {/* ACTION BUTTONS */}
         {(canApprove || canCustomize) && (
