@@ -11,6 +11,7 @@ export type Recipe = {
   updatedAt: string;
   nutrition?: Nutrition;
   owner?: string;
+  isApproved?: boolean;
 };
 
 export type Category = {

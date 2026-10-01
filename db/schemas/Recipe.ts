@@ -60,6 +60,10 @@ const recipeSchema = new Schema(
       required: false,
       trim: true,
     },
+    isApproved: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

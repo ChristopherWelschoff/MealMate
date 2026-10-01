@@ -27,10 +27,12 @@ export default async function handler(
 
   if (req.method === "GET") {
     try {
-      const recipes = await Recipe.find().sort({ createdAt: -1 }).populate({
-        path: "category",
-        model: "Category",
-      });
+      const recipes = await Recipe.find({ isApproved: { $ne: false } })
+        .sort({ createdAt: -1 })
+        .populate({
+          path: "category",
+          model: "Category",
+        });
 
       return res.status(200).json(recipes);
     } catch (error) {
