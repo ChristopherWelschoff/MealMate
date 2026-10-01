@@ -3,6 +3,7 @@ import type { Recipe } from "@/types";
 import { Spinner } from "@/components/StateMessages";
 import { toast } from "react-toastify";
 import RecipeCard from "@/components/RecipeCard";
+import { approveRecipe } from "@/lib/approveRecipe";
 
 export default function AdminPage() {
   const {
@@ -11,19 +12,6 @@ export default function AdminPage() {
     isLoading,
     mutate: mutatePending,
   } = useSWR<Recipe[]>("/api/admin/pending");
-
-  async function handleApprove(id: string) {
-    const response = await fetch(`/api/recipe/${id}`, { method: "PATCH" });
-
-    if (!response.ok) {
-      toast.error("Could not approve recipe");
-      return;
-    }
-
-    await mutatePending();
-    await mutate("/api/recipes");
-    toast.success("Recipe approved");
-  }
 
   if (isLoading) {
     return (
@@ -56,7 +44,7 @@ export default function AdminPage() {
             <RecipeCard {...recipe} />
             <button
               type="button"
-              onClick={() => handleApprove(recipe._id)}
+              onClick={() => approveRecipe(recipe._id)}
               className="rounded-full bg-primary px-6 py-2.5 text-sm font-medium uppercase tracking-[0.15em] text-primary-foreground shadow-md transition hover:bg-primary/90"
             >
               Approve

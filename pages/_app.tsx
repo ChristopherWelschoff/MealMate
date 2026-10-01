@@ -12,6 +12,7 @@ const logoFont = Satisfy({
   subsets: ["latin"],
   weight: ["400"],
   variable: "--font-satisfy",
+  preload: false,
 });
 
 const fetcher = async (url: string) => {

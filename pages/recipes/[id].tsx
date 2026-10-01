@@ -12,6 +12,9 @@ import NutritionInfo from "@/components/NutritionInfo";
 import { Leaf } from "lucide-react";
 import useSWR from "swr";
 import { Spinner } from "@/components/StateMessages";
+import { useSession } from "next-auth/react";
+import Button from "@/components/Button";
+import { approveRecipe } from "@/lib/approveRecipe";
 
 export default function RecipeDetails() {
   const router = useRouter();
@@ -21,6 +24,7 @@ export default function RecipeDetails() {
     error,
     isLoading,
   } = useSWR<Recipe>(id ? `/api/recipe/${id}` : null);
+  const { data: session } = useSession();
 
   if (isLoading || !id) {
     return (
@@ -37,6 +41,9 @@ export default function RecipeDetails() {
       </p>
     );
   }
+
+  const isAdmin = session?.user?.isAdmin;
+  const canApprove = isAdmin && recipe.isApproved === false;
 
   return (
     <Card className="mx-auto mb-8 w-[95%] max-w-md gap-0 overflow-hidden rounded-2xl border border-border bg-card p-0 shadow-sm">
@@ -72,14 +79,18 @@ export default function RecipeDetails() {
           </div>
 
           <div className="flex shrink-0 items-center gap-3">
-            <Link
-              aria-label="Edit recipe"
-              href={`/recipes/${recipe._id}/editRecipe`}
-              className="rounded-full p-1.5 text-primary transition hover:bg-secondary"
-            >
-              <Pencil size={20} />
-            </Link>
-            <DeleteRecipe />
+            {isAdmin && (
+              <>
+                <Link
+                  aria-label="Edit recipe"
+                  href={`/recipes/${recipe._id}/editRecipe`}
+                  className="rounded-full p-1.5 text-primary transition hover:bg-secondary"
+                >
+                  <Pencil size={20} />
+                </Link>
+                <DeleteRecipe />
+              </>
+            )}
             <FavoriteButton id={recipe._id} />
           </div>
         </div>
@@ -155,6 +166,9 @@ export default function RecipeDetails() {
             ))}
           </ol>
         </section>
+        {canApprove && (
+          <Button onClick={() => approveRecipe(recipe._id)}>Approve</Button>
+        )}
       </CardContent>
     </Card>
   );
