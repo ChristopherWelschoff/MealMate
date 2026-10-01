@@ -5,15 +5,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import { categoryColors } from "@/lib/utils";
 import Link from "next/link";
-import { Pencil, Timer } from "lucide-react";
+import { Leaf, Lock, Pencil, Timer } from "lucide-react";
 import DeleteRecipe from "./deleteRecipe";
 import FavoriteButton from "@/components/FavoriteButton";
 import NutritionInfo from "@/components/NutritionInfo";
-import { Leaf } from "lucide-react";
 import useSWR from "swr";
 import { Spinner } from "@/components/StateMessages";
 import { useSession } from "next-auth/react";
 import Button from "@/components/Button";
+import { toast } from "react-toastify";
 import { approveRecipe } from "@/lib/approveRecipe";
 
 export default function RecipeDetails() {
@@ -25,6 +25,19 @@ export default function RecipeDetails() {
     isLoading,
   } = useSWR<Recipe>(id ? `/api/recipe/${id}` : null);
   const { data: session } = useSession();
+
+  async function handleCustomize() {
+    const response = await fetch(`/api/recipe/${id}/copy`, { method: "POST" });
+
+    if (!response.ok) {
+      toast.error("Could not create your copy");
+      return;
+    }
+
+    const data = await response.json();
+    toast.success("Your private copy was created");
+    router.push(`/recipes/${data.id}/editRecipe`);
+  }
 
   if (isLoading || !id) {
     return (
@@ -42,8 +55,14 @@ export default function RecipeDetails() {
     );
   }
 
-  const isAdmin = session?.user?.isAdmin;
-  const canApprove = isAdmin && recipe.isApproved === false;
+  const isAdmin = session?.user?.isAdmin === true;
+  const isOwner = !!session && recipe.owner === session.user?.email;
+  const isPrivate = recipe.isPrivate === true;
+  const isPending = recipe.isApproved === false;
+
+  const canEdit = isAdmin || (isOwner && (isPrivate || isPending));
+  const canApprove = isAdmin && isPending;
+  const canCustomize = !!session && !isPrivate;
 
   return (
     <Card className="mx-auto mb-8 w-[95%] max-w-md gap-0 overflow-hidden rounded-2xl border border-border bg-card p-0 shadow-sm">
@@ -61,6 +80,23 @@ export default function RecipeDetails() {
       </div>
 
       <CardHeader className="gap-4 p-5">
+        {/* STATUS */}
+        {(isPrivate || isPending) && (
+          <div className="flex flex-wrap gap-1.5">
+            {isPrivate && (
+              <Badge className="rounded-full bg-secondary px-2.5 text-xs text-secondary-foreground">
+                <Lock size={12} aria-hidden="true" />
+                Your private copy
+              </Badge>
+            )}
+            {isPending && (
+              <Badge className="rounded-full bg-amber-50 px-2.5 text-xs text-amber-700">
+                Waiting for approval
+              </Badge>
+            )}
+          </div>
+        )}
+
         {/* CATEGORIES + ACTIONS */}
         <div className="flex items-center justify-between gap-3">
           <div className="flex flex-wrap gap-1.5">
@@ -79,7 +115,7 @@ export default function RecipeDetails() {
           </div>
 
           <div className="flex shrink-0 items-center gap-3">
-            {isAdmin && (
+            {canEdit && (
               <>
                 <Link
                   aria-label="Edit recipe"
@@ -95,10 +131,15 @@ export default function RecipeDetails() {
           </div>
         </div>
 
-        {/* TITLE */}
-        <CardTitle className="text-3xl font-semibold leading-tight tracking-tight text-foreground">
-          {recipe.title}
-        </CardTitle>
+        {/* TITLE + CREATOR */}
+        <div>
+          <CardTitle className="text-3xl font-semibold leading-tight tracking-tight text-foreground">
+            {recipe.title}
+          </CardTitle>
+          <small className="text-xs text-muted-foreground">
+            by {recipe.ownerName || "MealMate"}
+          </small>
+        </div>
 
         {/* DESCRIPTION + DURATION */}
         {recipe.description && (
@@ -112,9 +153,29 @@ export default function RecipeDetails() {
         </div>
 
         <NutritionInfo nutrition={recipe.nutrition} />
-        <small className="text-xs text-muted-foreground">
-          by {recipe.ownerName || "MealMate"}
-        </small>
+
+        {/* ACTION BUTTONS */}
+        {(canApprove || canCustomize) && (
+          <div className="flex flex-col gap-3">
+            {canApprove && (
+              <Button
+                onClick={() => approveRecipe(recipe._id)}
+                className="w-full"
+              >
+                Approve
+              </Button>
+            )}
+            {canCustomize && (
+              <Button
+                variant="outline"
+                onClick={handleCustomize}
+                className="w-full"
+              >
+                Customize for me
+              </Button>
+            )}
+          </div>
+        )}
       </CardHeader>
 
       <CardContent className="space-y-8 px-5 pb-6">
@@ -169,9 +230,6 @@ export default function RecipeDetails() {
             ))}
           </ol>
         </section>
-        {canApprove && (
-          <Button onClick={() => approveRecipe(recipe._id)}>Approve</Button>
-        )}
       </CardContent>
     </Card>
   );
