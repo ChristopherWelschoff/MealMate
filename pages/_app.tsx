@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import useSWR, { SWRConfig } from "swr";
 import type { Recipe, Category } from "@/types";
 import { ToastContainer, Slide } from "react-toastify";
-
+import { SessionProvider } from "next-auth/react";
 import { Satisfy } from "next/font/google";
 
 const logoFont = Satisfy({
@@ -34,7 +34,10 @@ const fetcher = async (url: string) => {
   return response.json();
 };
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}: AppProps) {
   const {
     data: recipes,
     error,
@@ -47,35 +50,40 @@ export default function App({ Component, pageProps }: AppProps) {
 
   if (isHome) {
     return (
-      <div className={logoFont.variable}>
-        <Component {...pageProps} />
-      </div>
+      <SessionProvider session={session}>
+        <div className={logoFont.variable}>
+          <Component {...pageProps} />
+        </div>
+      </SessionProvider>
     );
   }
 
   return (
-    <div className={logoFont.variable}>
-      <SWRConfig value={{ fetcher }}>
-        <Layout>
-          <Component
-            recipes={recipes}
-            categories={categories}
-            error={error}
-            isLoading={isLoading}
-            {...pageProps}
-          />
-        </Layout>
-      </SWRConfig>
-      <ToastContainer
-        position="bottom-center"
-        autoClose={2500}
-        hideProgressBar
-        closeOnClick
-        pauseOnHover
-        theme="light"
-        transition={Slide}
-        toastClassName="!shadow-lg !border !border-border !text-sm"
-      />
-    </div>
+    <SessionProvider session={session}>
+      {" "}
+      <div className={logoFont.variable}>
+        <SWRConfig value={{ fetcher }}>
+          <Layout>
+            <Component
+              recipes={recipes}
+              categories={categories}
+              error={error}
+              isLoading={isLoading}
+              {...pageProps}
+            />
+          </Layout>
+        </SWRConfig>
+        <ToastContainer
+          position="bottom-center"
+          autoClose={2500}
+          hideProgressBar
+          closeOnClick
+          pauseOnHover
+          theme="light"
+          transition={Slide}
+          toastClassName="!shadow-lg !border !border-border !text-sm"
+        />
+      </div>
+    </SessionProvider>
   );
 }
