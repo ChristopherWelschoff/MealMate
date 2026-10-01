@@ -12,33 +12,42 @@ export default function ProfilePage() {
     );
   }
 
-  if (status === "unauthenticated") {
+  if (status === "unauthenticated" || !session) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <button type="button" onClick={() => signIn("google")}>
-          Sign in
+      <div className="flex min-h-[50vh] flex-col items-center justify-center px-6 text-center">
+        <h2 className="font-logo text-3xl text-primary">
+          You are not logged in
+        </h2>
+        <button
+          onClick={() => signIn("google")}
+          type="button"
+          className="my-5 rounded-full bg-primary px-6 py-3 text-sm font-medium uppercase tracking-[0.15em] text-primary-foreground shadow-md transition hover:bg-primary/90"
+        >
+          Login
         </button>
       </div>
     );
   }
 
-  if (status === "authenticated") {
-    return (
-      <>
-        <div className="mb-4 text-center">
-          <h1 className="font-logo text-4xl text-primary">
-            {session.user?.name}
-          </h1>
-          <p className="mt-1 text-xs uppercase tracking-[0.25em] text-muted-foreground">
-            {session.user?.email}
-          </p>
-        </div>
-        <div className="flex min-h-[60vh] items-center justify-center">
-          <button type="button" onClick={() => signIn("google")}>
-            Sign in
-          </button>
-        </div>
-      </>
-    );
-  }
+  return (
+    <>
+      <div className="mb-4 text-center">
+        <h1 className="font-logo text-4xl text-primary">
+          {session.user?.name}
+        </h1>
+        <p className="mt-1 text-xs uppercase tracking-[0.25em] text-muted-foreground">
+          {session.user?.email}
+        </p>
+      </div>
+      <div className=" text-center">
+        <button
+          onClick={() => signOut()}
+          type="button"
+          className=" my-5 rounded-full bg-primary px-6 py-3 text-sm font-medium uppercase tracking-[0.15em] text-primary-foreground shadow-md transition hover:bg-primary/90"
+        >
+          Logout
+        </button>
+      </div>
+    </>
+  );
 }
