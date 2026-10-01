@@ -4,6 +4,9 @@ import Recipe from "@/db/schemas/Recipe";
 import { parseForm } from "@/lib/parseForm";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import { calculateNutrition } from "@/lib/nutrition";
+import { getServerSession } from "next-auth";
+import { AuthOptions } from "next-auth";
+import { authOptions } from "./auth/[...nextauth]";
 
 export const config = {
   api: {
@@ -41,6 +44,10 @@ export default async function handler(
 
   if (req.method === "POST") {
     try {
+      const session = await getServerSession(req, res, authOptions);
+      if (!session) {
+        return res.status(401).json({ message:"Please login" });
+      }
       const { fields, files } = await parseForm(req);
 
       const imageFile = files.image?.[0];
