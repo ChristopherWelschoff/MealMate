@@ -61,7 +61,6 @@ export default async function handler(
           : Promise.resolve(undefined),
         calculateNutrition(ingredients),
       ]);
-
       const recipeData = {
         title: fields.title?.[0],
         description: fields.description?.[0],
