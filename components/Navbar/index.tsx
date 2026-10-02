@@ -1,4 +1,4 @@
-import { Heart, Leaf, PlusCircle, User, type LucideIcon } from "lucide-react";
+import { Heart, Leaf, User, ChefHat, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -12,10 +12,10 @@ type NavItem = {
 const navItems: NavItem[] = [
   { href: "/landingPage", label: "Recipes", icon: Leaf, fillWhenActive: true },
   {
-    href: "/recipes/createRecipe",
-    label: "Create",
-    icon: PlusCircle,
-    fillWhenActive: false,
+    href: "/my-recipes",
+    label: "My-Recipes",
+    icon: ChefHat,
+    fillWhenActive: true,
   },
   {
     href: "/recipes/favoriteRecipes",

@@ -26,8 +26,9 @@ export default function CreateRecipe({
     }
 
     await mutate("/api/recipes");
-    await router.push("/landingPage");
-    toast.success("Your recipe was successfully created");
+    await mutate("/api/my-recipes");
+    await router.push("/my-recipes");
+    toast.success("Your recipe was submitted and is waiting for approval");
   }
 
   if (status === "loading") {

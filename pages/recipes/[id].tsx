@@ -35,7 +35,7 @@ export default function RecipeDetails() {
     }
 
     const data = await response.json();
-    toast.success("Your private copy was created");
+    toast.success("This recipe is now in your own Recipes ");
     router.push(`/recipes/${data.id}/editRecipe`);
   }
 
@@ -126,7 +126,7 @@ export default function RecipeDetails() {
                 </Link>
                 <DeleteRecipe
                   redirectTo={
-                    isPrivate || isPending ? "/profile" : "/landingPage"
+                    isPrivate || isPending ? "/my-recipes" : "/landingPage"
                   }
                 />
               </>
