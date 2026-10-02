@@ -23,15 +23,18 @@ export default function MyRecipes() {
 
   if (status === "unauthenticated" || !session) {
     return (
-      <div className="flex min-h-[50vh] flex-col items-center justify-center px-6 text-center">
-        <h2 className="font-logo text-3xl text-primary">Your recipes</h2>
-        <p className="mt-2 max-w-xs text-sm text-muted-foreground">
-          Sign in to create recipes and save your own versions.
-        </p>
-        <Button onClick={() => signIn("google")} className="mt-6">
-          Login
-        </Button>
-      </div>
+      <>
+        <PageHeader header="My recipes" subheader="Your own recipes" />
+        <div className="flex min-h-[50vh] flex-col items-center justify-center px-6 text-center">
+          <h2 className="font-logo text-3xl text-primary">Your recipes</h2>
+          <p className="mt-2 max-w-xs text-sm text-muted-foreground">
+            Sign in to create recipes and save your own versions.
+          </p>
+          <Button onClick={() => signIn("google")} className="mt-6">
+            Login
+          </Button>
+        </div>
+      </>
     );
   }
 

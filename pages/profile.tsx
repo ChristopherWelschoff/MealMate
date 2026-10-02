@@ -20,9 +20,10 @@ export default function ProfilePage() {
       <>
         <PageHeader header="Profile" subheader="you are not logged in" />
         <div className="flex min-h-[50vh] flex-col items-center justify-center px-6 text-center">
-          <h2 className="font-logo text-3xl text-primary">
-            You are not logged in
-          </h2>
+          <h2 className="font-logo text-3xl text-primary">Oooops...!</h2>
+          <p className="mt-2 max-w-xs text-sm text-muted-foreground">
+            Login to see you profile
+          </p>
           <button
             onClick={() => signIn("google")}
             type="button"
