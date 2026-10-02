@@ -233,7 +233,7 @@ export default function WelcomePage() {
           <Button
             onClick={() => signIn("google", { callbackUrl: "/landingPage" })}
           >
-            Login with Google
+            Login
           </Button>
           <ButtonLink href="/landingPage" variant="outline">
             Continue as guest
