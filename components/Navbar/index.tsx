@@ -1,4 +1,4 @@
-import { Heart, Leaf, PlusCircle, type LucideIcon } from "lucide-react";
+import { Heart, Leaf, User, ChefHat, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -12,15 +12,21 @@ type NavItem = {
 const navItems: NavItem[] = [
   { href: "/landingPage", label: "Recipes", icon: Leaf, fillWhenActive: true },
   {
-    href: "/recipes/createRecipe",
-    label: "Create",
-    icon: PlusCircle,
-    fillWhenActive: false,
+    href: "/my-recipes",
+    label: "My-Recipes",
+    icon: ChefHat,
+    fillWhenActive: true,
   },
   {
     href: "/recipes/favoriteRecipes",
     label: "Favorites",
     icon: Heart,
+    fillWhenActive: true,
+  },
+  {
+    href: "/profile",
+    label: "Profile",
+    icon: User,
     fillWhenActive: true,
   },
 ];
@@ -38,18 +44,19 @@ export default function Navbar() {
             key={href}
             href={href}
             aria-current={isActive ? "page" : undefined}
-            className={`flex flex-col items-center gap-1 rounded-xl px-4 py-1.5 transition ${
-              isActive
-                ? "bg-secondary text-primary"
-                : "text-muted-foreground hover:text-primary"
-            }`}
+            className={`flex flex-col items-center gap-1 
+               rounded-xl px-4 py-1.5 transition ${
+                 isActive
+                   ? "bg-secondary text-primary"
+                   : "text-muted-foreground hover:text-primary"
+               }`}
           >
             <Icon
               size={22}
               strokeWidth={isActive ? 2 : 1.6}
               className={isActive && fillWhenActive ? "fill-primary" : ""}
             />
-            <span className="text-[10px] font-medium uppercase tracking-[0.15em]">
+            <span className="whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.15em]">
               {label}
             </span>
           </Link>

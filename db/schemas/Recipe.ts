@@ -55,6 +55,29 @@ const recipeSchema = new Schema(
       carbs: { type: Number },
       fat: { type: Number },
     },
+    owner: {
+      type: String,
+      required: false,
+      trim: true,
+    },
+    ownerName: {
+      type: String,
+      required: false,
+      trim: true,
+    },
+    isApproved: {
+      type: Boolean,
+      default: false,
+    },
+    isPrivate: {
+      type: Boolean,
+      default: false,
+    },
+    copiedFrom: {
+      type: Schema.Types.ObjectId,
+      ref: "Recipe",
+      required: false,
+    },
   },
   {
     timestamps: true,

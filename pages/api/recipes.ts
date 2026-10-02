@@ -4,6 +4,8 @@ import Recipe from "@/db/schemas/Recipe";
 import { parseForm } from "@/lib/parseForm";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import { calculateNutrition } from "@/lib/nutrition";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./auth/[...nextauth]";
 
 export const config = {
   api: {
@@ -25,10 +27,15 @@ export default async function handler(
 
   if (req.method === "GET") {
     try {
-      const recipes = await Recipe.find().sort({ createdAt: -1 }).populate({
-        path: "category",
-        model: "Category",
-      });
+      const recipes = await Recipe.find({
+        isApproved: { $ne: false },
+        isPrivate: { $ne: true },
+      })
+        .sort({ createdAt: -1 })
+        .populate({
+          path: "category",
+          model: "Category",
+        });
 
       return res.status(200).json(recipes);
     } catch (error) {
@@ -41,6 +48,13 @@ export default async function handler(
 
   if (req.method === "POST") {
     try {
+      const session = await getServerSession(req, res, authOptions);
+      if (!session) {
+        return res.status(401).json({ message: "Please login" });
+      }
+      if (!session?.user?.email) {
+        return res.status(401).json({ message: "Please login" });
+      }
       const { fields, files } = await parseForm(req);
 
       const imageFile = files.image?.[0];
@@ -52,7 +66,6 @@ export default async function handler(
           : Promise.resolve(undefined),
         calculateNutrition(ingredients),
       ]);
-
       const recipeData = {
         title: fields.title?.[0],
         description: fields.description?.[0],
@@ -62,6 +75,8 @@ export default async function handler(
         duration: Number(fields.duration?.[0]),
         imageUrl,
         nutrition: nutrition ?? undefined,
+        owner: session.user?.email,
+        ownerName: session?.user?.name,
       };
 
       await Recipe.create(recipeData);

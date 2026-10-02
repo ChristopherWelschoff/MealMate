@@ -4,6 +4,8 @@ import Recipe from "@/db/schemas/Recipe";
 import { parseForm } from "@/lib/parseForm";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import { calculateNutrition } from "@/lib/nutrition";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]";
 
 export const config = {
   api: {
@@ -43,12 +45,28 @@ export default async function handler(
 
   if (req.method === "PUT") {
     try {
+      const session = await getServerSession(req, res, authOptions);
+
+      if (!session?.user?.email) {
+        return res.status(401).json({ message: "Please login" });
+      }
       const { fields, files } = await parseForm(req);
       const existingRecipe = await Recipe.findById(id);
 
       if (!existingRecipe) {
         return res.status(404).json({ error: "Recipe not found" });
       }
+
+      const isOwner = existingRecipe.owner === session.user.email;
+      const isAdmin = session.user.email === process.env.ADMIN_EMAIL;
+      const isPrivate = existingRecipe.isPrivate === true;
+      const isPending = existingRecipe.isApproved === false;
+      const ownerMayEdit = isOwner && (isPrivate || isPending);
+
+      if (!ownerMayEdit && !isAdmin) {
+        return res.status(403).json({ message: "Not allowed" });
+      }
+
       const newIngredients = fields.ingredients ?? [];
       const ingredientsChanged =
         JSON.stringify(newIngredients) !==
@@ -87,8 +105,57 @@ export default async function handler(
     }
   }
 
+  if (req.method === "PATCH") {
+    try {
+      const session = await getServerSession(req, res, authOptions);
+      if (!session?.user?.email) {
+        return res.status(401).json({ message: "Please login" });
+      }
+
+      const isAdmin = session.user.email === process.env.ADMIN_EMAIL;
+      if (!isAdmin) {
+        return res.status(403).json({ message: "Not allowed" });
+      }
+
+      const updatedRecipe = await Recipe.findByIdAndUpdate(id, {
+        isApproved: true,
+      });
+
+      if (!updatedRecipe) {
+        return res.status(404).json({ error: "Recipe not found" });
+      }
+
+      return res.status(200).json({ status: `Recipe ${id} approved` });
+    } catch (error) {
+      console.error(error);
+      return res.status(400).json({
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+    }
+  }
+
   if (req.method === "DELETE") {
     try {
+      const session = await getServerSession(req, res, authOptions);
+      if (!session?.user?.email) {
+        return res.status(401).json({ message: "Please login" });
+      }
+
+      const existingRecipe = await Recipe.findById(id);
+      if (!existingRecipe) {
+        return res.status(404).json({ error: "Recipe not found" });
+      }
+
+      const isOwner = existingRecipe.owner === session.user.email;
+      const isAdmin = session.user.email === process.env.ADMIN_EMAIL;
+      const isPrivate = existingRecipe.isPrivate === true;
+      const isPending = existingRecipe.isApproved === false;
+      const ownerMayEdit = isOwner && (isPrivate || isPending);
+
+      if (!ownerMayEdit && !isAdmin) {
+        return res.status(403).json({ message: "Not allowed" });
+      }
+
       await Recipe.findByIdAndDelete(id);
       return res.status(200).json({ status: `Recipe ${id} deleted` });
     } catch (error) {

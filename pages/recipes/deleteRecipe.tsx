@@ -4,7 +4,11 @@ import { toast } from "react-toastify";
 import { Trash2 } from "lucide-react";
 import { mutate } from "swr";
 
-export default function DeleteRecipe() {
+type DeleteRecipeProps = {
+  redirectTo: string;
+};
+
+export default function DeleteRecipe({ redirectTo }: DeleteRecipeProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const router = useRouter();
   const { id } = router.query;
@@ -30,7 +34,8 @@ export default function DeleteRecipe() {
 
       closeDialog();
       await mutate("/api/recipes");
-      await router.push("/landingPage");
+      await mutate("/api/my-recipes");
+      await router.push(redirectTo);
       toast.success("Recipe successfully deleted");
     } catch {
       toast.error("Network error – please try again");

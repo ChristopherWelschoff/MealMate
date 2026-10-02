@@ -10,6 +10,11 @@ export type Recipe = {
   createdAt: string;
   updatedAt: string;
   nutrition?: Nutrition;
+  owner?: string;
+  isApproved?: boolean;
+  ownerName?: string;
+  isPrivate?: boolean;
+  copiedFrom?: string;
 };
 
 export type Category = {

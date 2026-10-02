@@ -5,28 +5,64 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import { categoryColors } from "@/lib/utils";
 import Link from "next/link";
-import { Pencil, Timer } from "lucide-react";
+import { Leaf, Lock, Pencil, Timer } from "lucide-react";
 import DeleteRecipe from "./deleteRecipe";
 import FavoriteButton from "@/components/FavoriteButton";
 import NutritionInfo from "@/components/NutritionInfo";
-import { Leaf } from "lucide-react";
+import useSWR from "swr";
+import { Spinner } from "@/components/StateMessages";
+import { useSession } from "next-auth/react";
+import Button from "@/components/Button";
+import { toast } from "react-toastify";
+import { approveRecipe } from "@/lib/approveRecipe";
 
-type RecipeDetailsProps = {
-  recipes: Recipe[];
-};
-
-export default function RecipeDetails({ recipes }: RecipeDetailsProps) {
+export default function RecipeDetails() {
   const router = useRouter();
   const { id } = router.query;
-  const recipe = recipes?.find((recipe) => recipe._id === id);
+  const {
+    data: recipe,
+    error,
+    isLoading,
+  } = useSWR<Recipe>(id ? `/api/recipe/${id}` : null);
+  const { data: session } = useSession();
 
-  if (!recipe) {
+  async function handleCustomize() {
+    const response = await fetch(`/api/recipe/${id}/copy`, { method: "POST" });
+
+    if (!response.ok) {
+      toast.error("Could not create your copy");
+      return;
+    }
+
+    const data = await response.json();
+    toast.success("This recipe is now in your own Recipes ");
+    router.push(`/recipes/${data.id}/editRecipe`);
+  }
+
+  if (isLoading || !id) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (error || !recipe) {
     return (
       <p className="mt-10 text-center text-muted-foreground">
         Recipe not found.
       </p>
     );
   }
+
+  const isAdmin = session?.user?.isAdmin === true;
+  const isOwner = !!session && recipe.owner === session.user?.email;
+  const isPrivate = recipe.isPrivate === true;
+  const isPending = recipe.isApproved === false;
+
+  const canEdit = isAdmin || (isOwner && (isPrivate || isPending));
+  const canApprove = isAdmin && isPending;
+  const canCustomize = !!session && !isPrivate;
 
   return (
     <Card className="mx-auto mb-8 w-[95%] max-w-md gap-0 overflow-hidden rounded-2xl border border-border bg-card p-0 shadow-sm">
@@ -44,6 +80,23 @@ export default function RecipeDetails({ recipes }: RecipeDetailsProps) {
       </div>
 
       <CardHeader className="gap-4 p-5">
+        {/* STATUS */}
+        {(isPrivate || isPending) && (
+          <div className="flex flex-wrap gap-1.5">
+            {isPrivate && (
+              <Badge className="rounded-full bg-secondary px-2.5 text-xs text-secondary-foreground">
+                <Lock size={12} aria-hidden="true" />
+                Your private copy
+              </Badge>
+            )}
+            {isPending && (
+              <Badge className="rounded-full bg-amber-50 px-2.5 text-xs text-amber-700">
+                Waiting for approval
+              </Badge>
+            )}
+          </div>
+        )}
+
         {/* CATEGORIES + ACTIONS */}
         <div className="flex items-center justify-between gap-3">
           <div className="flex flex-wrap gap-1.5">
@@ -62,22 +115,32 @@ export default function RecipeDetails({ recipes }: RecipeDetailsProps) {
           </div>
 
           <div className="flex shrink-0 items-center gap-3">
-            <Link
-              aria-label="Edit recipe"
-              href={`/recipes/${recipe._id}/editRecipe`}
-              className="rounded-full p-1.5 text-primary transition hover:bg-secondary"
-            >
-              <Pencil size={20} />
-            </Link>
-            <DeleteRecipe />
+            {canEdit && (
+              <>
+                <Link
+                  aria-label="Edit recipe"
+                  href={`/recipes/${recipe._id}/editRecipe`}
+                  className="rounded-full p-1.5 text-primary transition hover:bg-secondary"
+                >
+                  <Pencil size={20} />
+                </Link>
+                <DeleteRecipe
+                  redirectTo={
+                    isPrivate || isPending ? "/my-recipes" : "/landingPage"
+                  }
+                />
+              </>
+            )}
             <FavoriteButton id={recipe._id} />
           </div>
         </div>
 
-        {/* TITLE */}
-        <CardTitle className="text-3xl font-semibold leading-tight tracking-tight text-foreground">
-          {recipe.title}
-        </CardTitle>
+        {/* TITLE + CREATOR */}
+        <div>
+          <CardTitle className="text-3xl font-semibold leading-tight tracking-tight text-foreground">
+            {recipe.title}
+          </CardTitle>
+        </div>
 
         {/* DESCRIPTION + DURATION */}
         {recipe.description && (
@@ -91,6 +154,32 @@ export default function RecipeDetails({ recipes }: RecipeDetailsProps) {
         </div>
 
         <NutritionInfo nutrition={recipe.nutrition} />
+        <small className="text-xs text-muted-foreground">
+          by {recipe.ownerName || "MealMate"}
+        </small>
+
+        {/* ACTION BUTTONS */}
+        {(canApprove || canCustomize) && (
+          <div className="flex flex-col gap-3">
+            {canApprove && (
+              <Button
+                onClick={() => approveRecipe(recipe._id)}
+                className="w-full"
+              >
+                Approve
+              </Button>
+            )}
+            {canCustomize && (
+              <Button
+                variant="outline"
+                onClick={handleCustomize}
+                className="w-full"
+              >
+                Customize for me
+              </Button>
+            )}
+          </div>
+        )}
       </CardHeader>
 
       <CardContent className="space-y-8 px-5 pb-6">
