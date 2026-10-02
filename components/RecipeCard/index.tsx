@@ -9,6 +9,8 @@ import FavoriteButton from "../FavoriteButton";
 import NutritionInfo from "../NutritionInfo";
 
 export default function RecipeCard({ ...recipe }: Recipe) {
+  const isPrivate = recipe.isPrivate === true;
+  const isPending = recipe.isApproved === false;
   return (
     <Link
       href={`/recipes/${recipe._id}`}
@@ -39,6 +41,16 @@ export default function RecipeCard({ ...recipe }: Recipe) {
             </div>
           </div>
           <div className="flex flex-wrap gap-1.5">
+            {isPrivate && (
+              <Badge className="rounded-full bg-secondary px-2.5 text-xs text-secondary-foreground">
+                Copied
+              </Badge>
+            )}
+            {isPending && (
+              <Badge className="rounded-full bg-amber-50 px-2.5 text-xs text-amber-700">
+                Pending
+              </Badge>
+            )}
             {recipe.category.map((category) => (
               <Badge
                 key={category._id}
