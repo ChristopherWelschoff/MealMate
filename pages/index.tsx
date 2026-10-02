@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { motion } from "motion/react";
 import {
   Apple,
@@ -13,10 +12,8 @@ import {
   Wheat,
   type LucideIcon,
 } from "lucide-react";
-
-import { Satisfy } from "next/font/google";
-
-const logoFont = Satisfy({ subsets: ["latin"], weight: ["400"] });
+import Button, { ButtonLink } from "@/components/Button";
+import { signIn } from "next-auth/react";
 
 type FloatingIngredient = {
   Icon: LucideIcon;
@@ -232,12 +229,16 @@ export default function WelcomePage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut", delay: 2.5 }}
       >
-        <Link
-          href="/landingPage"
-          className="inline-block rounded-full bg-primary px-10 py-3 text-sm font-medium uppercase tracking-[0.15em] text-primary-foreground shadow-md transition hover:bg-primary/90 hover:shadow-lg"
-        >
-          Let&apos;s cook
-        </Link>
+        <div className="flex flex-col gap-4">
+          <Button
+            onClick={() => signIn("google", { callbackUrl: "/landingPage" })}
+          >
+            Login with Google
+          </Button>
+          <ButtonLink href="/landingPage" variant="outline">
+            Continue as guest
+          </ButtonLink>
+        </div>
       </motion.div>
     </main>
   );
