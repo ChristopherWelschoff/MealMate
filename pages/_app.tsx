@@ -7,7 +7,7 @@ import type { Recipe, Category } from "@/types";
 import { ToastContainer, Slide } from "react-toastify";
 import { SessionProvider } from "next-auth/react";
 import { Satisfy } from "next/font/google";
-
+import { ThemeProvider } from "next-themes";
 const logoFont = Satisfy({
   subsets: ["latin"],
   weight: ["400"],
@@ -60,31 +60,32 @@ export default function App({
   }
 
   return (
-    <SessionProvider session={session}>
-      {" "}
-      <div className={logoFont.variable}>
-        <SWRConfig value={{ fetcher }}>
-          <Layout>
-            <Component
-              recipes={recipes}
-              categories={categories}
-              error={error}
-              isLoading={isLoading}
-              {...pageProps}
-            />
-          </Layout>
-        </SWRConfig>
-        <ToastContainer
-          position="top-center"
-          autoClose={2500}
-          hideProgressBar
-          closeOnClick
-          pauseOnHover
-          theme="light"
-          transition={Slide}
-          toastClassName="!shadow-lg !border !border-border !text-sm"
-        />
-      </div>
-    </SessionProvider>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <SessionProvider session={session}>
+        <div className={logoFont.variable}>
+          <SWRConfig value={{ fetcher }}>
+            <Layout>
+              <Component
+                recipes={recipes}
+                categories={categories}
+                error={error}
+                isLoading={isLoading}
+                {...pageProps}
+              />
+            </Layout>
+          </SWRConfig>
+          <ToastContainer
+            position="top-center"
+            autoClose={2500}
+            hideProgressBar
+            closeOnClick
+            pauseOnHover
+            theme="light"
+            transition={Slide}
+            toastClassName="!shadow-lg !border !border-border !text-sm"
+          />
+        </div>
+      </SessionProvider>
+    </ThemeProvider>
   );
 }
