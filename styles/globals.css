@@ -123,6 +123,8 @@
   --toastify-color-error: oklch(0.577 0.245 27.325);
   --toastify-icon-color-error: oklch(0.577 0.245 27.325);
   --toastify-color-progress-error: oklch(0.577 0.245 27.325);
+
+  --glow: #ecfdf3;
 }
 
 .dark {
@@ -152,7 +154,12 @@
   }
   body {
     @apply text-foreground;
-    background: radial-gradient(circle at 50% 0%, #ecfdf3, #fafaf7 60%) fixed;
+    background: radial-gradient(
+        circle at 50% 0%,
+        var(--glow),
+        var(--background) 60%
+      )
+      fixed;
   }
   html {
     @apply font-sans;
