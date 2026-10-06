@@ -1,8 +1,20 @@
-import { Spinner } from "@/components/StateMessages";
 import { useSession, signIn, signOut } from "next-auth/react";
+import { Spinner } from "@/components/StateMessages";
 import Button, { ButtonLink } from "@/components/Button";
+import ThemeToggle from "@/components/ThemeToggle";
 
-import PageHeader from "@/components/PageHeader";
+function SettingsCard() {
+  return (
+    <div className="flex flex-col gap-2">
+      <p className="px-1 text-xs uppercase tracking-[0.15em] text-muted-foreground">
+        Settings
+      </p>
+      <div className="rounded-2xl border border-border bg-card shadow-sm">
+        <ThemeToggle />
+      </div>
+    </div>
+  );
+}
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
@@ -17,38 +29,47 @@ export default function ProfilePage() {
 
   if (status === "unauthenticated" || !session) {
     return (
-      <>
-        <PageHeader header="Profile" subheader="you are not logged in" />
-        <div className="flex min-h-[50vh] flex-col items-center justify-center px-6 text-center">
-          <h2 className="font-logo text-3xl text-primary">Oooops...!</h2>
+      <div className="flex min-h-[70vh] flex-col px-4">
+        <div className="flex flex-1 flex-col items-center justify-center text-center">
+          <h2 className="font-logo text-3xl text-primary">Your profile</h2>
           <p className="mt-2 max-w-xs text-sm text-muted-foreground">
-            Login to see you profile
+            Sign in to save favorites and share your own recipes.
           </p>
-          <button
-            onClick={() => signIn("google")}
-            type="button"
-            className="my-5 rounded-full bg-primary px-6 py-3 text-sm font-medium uppercase tracking-[0.15em] text-primary-foreground shadow-md transition hover:bg-primary/90"
-          >
+          <Button onClick={() => signIn("google")} className="mt-6">
             Login
-          </button>
+          </Button>
         </div>
-      </>
+
+        <div className="mx-auto mt-auto w-full max-w-xs pb-6">
+          <SettingsCard />
+        </div>
+      </div>
     );
   }
-  return (
-    <div className="flex min-h-[80vh] flex-col px-4">
-      <PageHeader
-        header={session.user?.name || ""}
-        subheader={session.user?.email || ""}
-      />
 
-      <div className="mx-auto mt-3 flex w-full max-w-xs flex-col gap-3 pb-6">
+  return (
+    <div className="flex min-h-[70vh] flex-col px-4">
+      <div className="mb-4 text-center">
+        <h1 className="font-logo text-4xl text-primary">
+          {session.user?.name}
+        </h1>
+        <p className="mt-1 text-xs uppercase tracking-[0.25em] text-muted-foreground">
+          {session.user?.email}
+        </p>
+      </div>
+
+      <div className="mx-auto mt-auto flex w-full max-w-xs flex-col gap-3 pb-6">
         {session.user?.isAdmin && (
           <ButtonLink href="/admin" variant="outline">
             Admin
           </ButtonLink>
         )}
-        <Button variant="primary" onClick={() => signOut()}>
+
+        <div className="my-3">
+          <SettingsCard />
+        </div>
+
+        <Button variant="outline" onClick={() => signOut({ callbackUrl: "/" })}>
           Logout
         </Button>
       </div>

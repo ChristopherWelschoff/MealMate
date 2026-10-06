@@ -9,15 +9,31 @@ export default function ThemeToggle() {
   }
 
   return (
-    <button
-      type="button"
-      onClick={toggleTheme}
-      aria-label="Toggle dark mode"
-      className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm text-foreground transition hover:bg-muted"
-    >
-      <Sun size={16} className="dark:hidden" aria-hidden="true" />
-      <Moon size={16} className="hidden dark:block" aria-hidden="true" />
-      <span>Theme</span>
-    </button>
+    <div className="flex items-center justify-between gap-4 px-4 py-3">
+      <span className="text-sm text-foreground">Dark mode</span>
+
+      <button
+        type="button"
+        role="switch"
+        aria-label="Dark mode"
+        aria-checked={resolvedTheme === "dark"}
+        onClick={toggleTheme}
+        suppressHydrationWarning
+        className="relative h-7 w-12 shrink-0 rounded-full bg-input transition dark:bg-primary"
+      >
+        <span className="absolute left-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-card shadow-sm transition-transform dark:translate-x-5">
+          <Sun
+            size={12}
+            className="text-amber-500 dark:hidden"
+            aria-hidden="true"
+          />
+          <Moon
+            size={12}
+            className="hidden text-primary dark:block"
+            aria-hidden="true"
+          />
+        </span>
+      </button>
+    </div>
   );
 }
