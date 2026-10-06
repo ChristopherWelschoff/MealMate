@@ -124,6 +124,12 @@
   --toastify-icon-color-error: oklch(0.577 0.245 27.325);
   --toastify-color-progress-error: oklch(0.577 0.245 27.325);
 
+  --toastify-color-light: #142019;
+  --toastify-text-color-light: #e7efe9;
+  --toastify-color-success: #86d6a0;
+  --toastify-icon-color-success: #86d6a0;
+  --toastify-color-progress-success: #86d6a0;
+
   --glow: #ecfdf3;
 }
 
