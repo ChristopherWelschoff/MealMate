@@ -172,6 +172,24 @@ export default function RecipeForm({
               neutral20: "#e5e7eb",
             },
           })}
+          styles={{
+            menu: (base) => ({
+              ...base,
+              backgroundColor: "var(--card)",
+              border: "1px solid var(--border)",
+              zIndex: 50,
+            }),
+            option: (base, state) => ({
+              ...base,
+              color: state.isDisabled
+                ? "var(--muted-foreground)"
+                : "var(--foreground)",
+              backgroundColor: state.isFocused
+                ? "var(--secondary)"
+                : "transparent",
+              cursor: state.isDisabled ? "not-allowed" : "pointer",
+            }),
+          }}
         />
         {fieldError.category && (
           <p className="mt-1 text-xs text-destructive">

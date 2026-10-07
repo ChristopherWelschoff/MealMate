@@ -121,7 +121,7 @@ const ingredients: FloatingIngredient[] = [
 
 export default function WelcomePage() {
   return (
-    <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_50%_40%,#ecfdf3,#fafaf7_70%)] px-4">
+    <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_50%_40%,var(--glow),var(--background)_70%)] px-4">
       {/* Flying ingredients */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         {ingredients.map(
