@@ -6,11 +6,20 @@ import { Spinner } from "@/components/StateMessages";
 import { useSession, signIn } from "next-auth/react";
 import Button, { ButtonLink } from "@/components/Button";
 import { Plus } from "lucide-react";
+import { useState } from "react";
+import { SearchBar } from "@/components/SearchBar";
 
 export default function MyRecipes() {
   const { data: session, status } = useSession();
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const { data: myRecipes } = useSWR<Recipe[]>(
     status === "authenticated" ? "/api/my-recipes" : null,
+  );
+
+  const filteredRecipes = myRecipes?.filter((recipe) =>
+    recipe.title
+      .toLocaleLowerCase()
+      .includes(searchTerm.toLocaleLowerCase().trim()),
   );
 
   if (status === "loading") {
@@ -48,14 +57,26 @@ export default function MyRecipes() {
       </ButtonLink>
 
       <section className="w-full max-w-md">
+        {myRecipes && myRecipes.length > 0 && (
+          <SearchBar onSearch={setSearchTerm} searchTerm={searchTerm} />
+        )}
+
         {myRecipes?.length === 0 && (
           <p className="text-center text-sm text-muted-foreground">
             No recipes yet. Create one or customize a recipe you like.
           </p>
         )}
 
-        <ul className="flex flex-col gap-3">
-          {myRecipes?.map((recipe) => (
+        {myRecipes &&
+          myRecipes.length > 0 &&
+          filteredRecipes?.length === 0 && (
+            <p className="mt-4 text-center text-sm text-muted-foreground">
+              No recipes match your search.
+            </p>
+          )}
+
+        <ul className="mt-3 flex flex-col gap-3">
+          {filteredRecipes?.map((recipe) => (
             <li key={recipe._id}>
               <RecipeCard {...recipe} />
             </li>
