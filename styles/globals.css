@@ -152,6 +152,7 @@
   --border: #26352c;
   --input: #2f4136;
   --ring: #86d6a0;
+  --glow: var(--background);
 }
 
 @layer base {
