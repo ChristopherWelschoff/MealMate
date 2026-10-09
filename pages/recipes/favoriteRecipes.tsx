@@ -1,3 +1,4 @@
+import PageHeader from "@/components/PageHeader";
 import RecipeList from "@/components/RecipeList";
 import useFavorites from "@/hooks/useFavorites";
 import { Category, Recipe } from "@/types";
@@ -27,12 +28,7 @@ export default function FavoriteRecipes({
 
   return (
     <>
-      <div className="mb-4 text-center">
-        <h1 className="font-logo text-4xl text-primary">Favorites</h1>
-        <p className="mt-1 text-xs uppercase tracking-[0.25em] text-muted-foreground">
-          Your saved recipes
-        </p>
-      </div>
+      <PageHeader header="Favorites" subheader="Your saved recipes" />
 
       {hasNoFavorites ? (
         <div className="flex min-h-[50vh] flex-col items-center justify-center px-6 text-center">
