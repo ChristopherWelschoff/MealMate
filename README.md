@@ -19,3 +19,7 @@ Meal Mate is a recipe app for discovering, creating and saving meals. Browse rec
 ## Built with
 
 Next.js, React, TypeScript, Tailwind CSS, MongoDB, NextAuth, Cloudinary and Google Gemini.
+
+## Deployment
+
+[MealMate](https://meal-mate-iota.vercel.app)
