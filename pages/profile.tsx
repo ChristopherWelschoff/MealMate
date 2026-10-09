@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { Spinner } from "@/components/StateMessages";
 import Button, { ButtonLink } from "@/components/Button";
@@ -49,7 +50,21 @@ export default function ProfilePage() {
 
   return (
     <div className="flex min-h-[70vh] flex-col px-4">
-      <div className="mb-4 text-center">
+      <div className="mb-4 flex flex-col items-center text-center">
+        {session.user?.image ? (
+          <Image
+            src={session.user.image}
+            alt={session.user.name ?? "Profile picture"}
+            width={96}
+            height={96}
+            className="mb-3 h-24 w-24 rounded-full border border-border object-cover shadow-sm"
+            priority
+          />
+        ) : (
+          <div className="mb-3 flex h-24 w-24 items-center justify-center rounded-full border border-border bg-card font-logo text-4xl text-primary shadow-sm">
+            {session.user?.name?.charAt(0).toUpperCase() ?? "?"}
+          </div>
+        )}
         <h1 className="font-logo text-4xl text-primary">
           {session.user?.name}
         </h1>
