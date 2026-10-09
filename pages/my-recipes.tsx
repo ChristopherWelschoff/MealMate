@@ -5,6 +5,8 @@ import type { Recipe } from "@/types";
 import { Spinner } from "@/components/StateMessages";
 import { useSession, signIn } from "next-auth/react";
 import Button, { ButtonLink } from "@/components/Button";
+import FilterCarousel from "@/components/FilterCarousel";
+import type { Category } from "@/types";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { SearchBar } from "@/components/SearchBar";
@@ -12,15 +14,23 @@ import { SearchBar } from "@/components/SearchBar";
 export default function MyRecipes() {
   const { data: session, status } = useSession();
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [filterTerm, setFilterTerm] = useState<string>("");
   const { data: myRecipes } = useSWR<Recipe[]>(
     status === "authenticated" ? "/api/my-recipes" : null,
   );
 
-  const filteredRecipes = myRecipes?.filter((recipe) =>
-    recipe.title
+  const { data: categories } = useSWR<Category[]>("/api/categories");
+
+  const filteredRecipes = myRecipes?.filter((recipe) => {
+    const matchesSearch = recipe.title
       .toLocaleLowerCase()
-      .includes(searchTerm.toLocaleLowerCase().trim()),
-  );
+      .includes(searchTerm.toLocaleLowerCase().trim());
+    const matchesCategory =
+      filterTerm === "" ||
+      recipe.category.some((category) => category.name === filterTerm);
+
+    return matchesSearch && matchesCategory;
+  });
 
   if (status === "loading") {
     return (
@@ -61,6 +71,14 @@ export default function MyRecipes() {
           <SearchBar onSearch={setSearchTerm} searchTerm={searchTerm} />
         )}
 
+        {myRecipes && myRecipes.length > 0 && categories && (
+          <FilterCarousel
+            filterTerm={filterTerm}
+            onFilter={setFilterTerm}
+            categories={categories}
+          />
+        )}
+
         {myRecipes?.length === 0 && (
           <p className="text-center text-sm text-muted-foreground">
             No recipes yet. Create one or customize a recipe you like.
@@ -71,7 +89,7 @@ export default function MyRecipes() {
           myRecipes.length > 0 &&
           filteredRecipes?.length === 0 && (
             <p className="mt-4 text-center text-sm text-muted-foreground">
-              No recipes match your search.
+              No recipes match your search or category.
             </p>
           )}
 
