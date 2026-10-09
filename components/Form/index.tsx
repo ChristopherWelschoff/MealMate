@@ -223,6 +223,7 @@ export default function RecipeForm({
         itemLabel="Instruction"
         minFields={1}
         initialValues={recipe?.instructions}
+        reorderable
         hasError={fieldError.instructions}
         errorMessage="At least 1 instruction is required"
         onBlur={handleBlur}
