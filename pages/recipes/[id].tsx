@@ -5,7 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import { categoryColors } from "@/lib/utils";
 import Link from "next/link";
-import { Leaf, Lock, Pencil, Timer } from "lucide-react";
+import { Copy, Leaf, Lock, Pencil, Timer } from "lucide-react";
+import { useRef } from "react";
 import DeleteRecipe from "./deleteRecipe";
 import FavoriteButton from "@/components/FavoriteButton";
 import NutritionInfo from "@/components/NutritionInfo";
@@ -25,8 +26,10 @@ export default function RecipeDetails() {
     isLoading,
   } = useSWR<Recipe>(id ? `/api/recipe/${id}` : null);
   const { data: session } = useSession();
+  const customizeDialogRef = useRef<HTMLDialogElement>(null);
 
   async function handleCustomize() {
+    customizeDialogRef.current?.close();
     const response = await fetch(`/api/recipe/${id}/copy`, { method: "POST" });
 
     if (!response.ok) {
@@ -172,7 +175,7 @@ export default function RecipeDetails() {
             {canCustomize && (
               <Button
                 variant="outline"
-                onClick={handleCustomize}
+                onClick={() => customizeDialogRef.current?.showModal()}
                 className="w-full"
               >
                 Customize for me
@@ -181,6 +184,44 @@ export default function RecipeDetails() {
           </div>
         )}
       </CardHeader>
+
+      <dialog
+        ref={customizeDialogRef}
+        aria-labelledby="customize-title"
+        className="m-auto w-[90%] max-w-xs rounded-2xl bg-card p-6 text-center shadow-xl backdrop:bg-black/40 backdrop:backdrop-blur-sm"
+      >
+        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
+          <Copy size={22} className="text-primary" aria-hidden="true" />
+        </div>
+
+        <h2
+          id="customize-title"
+          className="text-lg font-semibold text-foreground"
+        >
+          Customize this recipe?
+        </h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          A copy will be added to your own recipes and opened for editing. The
+          original stays unchanged.
+        </p>
+
+        <div className="mt-6 flex gap-3">
+          <button
+            type="button"
+            onClick={handleCustomize}
+            className="flex-1 rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
+          >
+            Copy &amp; edit
+          </button>
+          <button
+            type="button"
+            onClick={() => customizeDialogRef.current?.close()}
+            className="flex-1 rounded-full border border-border px-4 py-2.5 text-sm font-medium text-foreground transition hover:bg-muted"
+          >
+            Cancel
+          </button>
+        </div>
+      </dialog>
 
       <CardContent className="space-y-8 px-5 pb-6">
         {/* INGREDIENTS */}
