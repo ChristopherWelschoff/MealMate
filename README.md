@@ -1,40 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Meal Mate
 
-## Getting Started
+Meal Mate is a small recipe app: discover recipes, create your own, save favorites, and get nutrition values estimated automatically.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Browse recipes** – search and filter by category (carousel)
+- **Recipe details** – ingredients, instructions, duration, image and nutrition info
+- **Your own recipes** – create, edit and delete; ingredients and instruction steps via form, steps can be reordered with up/down buttons
+- **Image upload** – images are compressed in the browser and stored on Cloudinary
+- **Automatic nutrition** – calories, protein, carbs and fat are estimated from the ingredients via Google Gemini when saving
+- **Favorites** – save recipes with one click and view them in one place
+- **Copy recipes** – take someone else's recipe as a private copy into "My recipes"
+- **Private recipes** – visible only to you, no approval needed
+- **Admin approval** – new public recipes only appear after being approved in the admin area
+- **Google login** and a profile page with user details
+- **Dark/light mode**
+
+## Pages
+
+| Route | Description |
+| --- | --- |
+| `/` | Home |
+| `/landingPage` | Recipe overview with search and filter |
+| `/recipes/[id]` | Recipe details |
+| `/recipes/createRecipe` | Create a new recipe |
+| `/recipes/[id]/editRecipe` | Edit a recipe |
+| `/recipes/favoriteRecipes` | Favorites |
+| `/my-recipes` | Your recipes with category filter |
+| `/profile` | Profile |
+| `/admin` | Approve pending recipes (admin only) |
+
+## Tech stack
+
+- [Next.js](https://nextjs.org) (Pages Router), React, TypeScript
+- Tailwind CSS 4, shadcn/ui (Base UI), Motion, Lucide icons
+- MongoDB with Mongoose
+- NextAuth (Google provider)
+- SWR for data fetching
+- Cloudinary for images
+- Google Gemini (`@google/genai`) for nutrition estimates
+
+## Project structure
+
+```
+components/   UI components
+db/           MongoDB connection and schemas (Recipe, Category, User)
+hooks/        Custom hooks (e.g. useFavorites)
+lib/          Helpers (nutrition, Cloudinary, form parsing, ...)
+pages/        Pages and API routes (pages/api)
+types/        Shared TypeScript types
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Getting started
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+Requirements: Node.js, a MongoDB database, a Cloudinary account, a Google OAuth client and a Gemini API key.
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+```bash
+npm install
+npm run dev
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+Then open [http://localhost:3000](http://localhost:3000).
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Environment variables
 
-## Learn More
+Create a `.env.local`:
 
-To learn more about Next.js, take a look at the following resources:
+```env
+MONGODB_URI=
+CLOUDINARY_URL=
+GEMINI_API_KEY=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+NEXTAUTH_SECRET=
+NEXTAUTH_URL=http://localhost:3000
+ADMIN_EMAIL=         # Google email of the admin
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+### Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Dev server |
+| `npm run build` | Production build |
+| `npm start` | Production server |
+| `npm run lint` | ESLint |
