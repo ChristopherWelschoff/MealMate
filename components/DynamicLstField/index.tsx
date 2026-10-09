@@ -1,4 +1,4 @@
-import { Plus, X } from "lucide-react";
+import { ChevronDown, ChevronUp, Plus, X } from "lucide-react";
 import { useState } from "react";
 
 type DynamicListFieldProps = {
@@ -7,6 +7,7 @@ type DynamicListFieldProps = {
   itemLabel: string;
   minFields: number;
   initialValues?: string[];
+  reorderable?: boolean;
   hasError: boolean;
   errorMessage: string;
   onBlur: (value: string, field: string) => void;
@@ -23,6 +24,7 @@ export default function DynamicListField({
   itemLabel,
   minFields,
   initialValues,
+  reorderable = false,
   hasError,
   errorMessage,
   onBlur,
@@ -48,6 +50,17 @@ export default function DynamicListField({
     setFields((prev) => prev.filter((field) => field.id !== fieldId));
   }
 
+  function moveField(index: number, direction: -1 | 1) {
+    setFields((prev) => {
+      const target = index + direction;
+      if (target < 0 || target >= prev.length) return prev;
+
+      const next = [...prev];
+      [next[index], next[target]] = [next[target], next[index]];
+      return next;
+    });
+  }
+
   return (
     <fieldset>
       <legend className="mb-1 block text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground">
@@ -59,28 +72,53 @@ export default function DynamicListField({
 
       <div className="flex flex-col gap-2">
         {fields.map((field, index) => (
-          <div key={field.id} className="relative">
-            <input
-              name={name}
-              type="text"
-              aria-label={`${itemLabel} ${index + 1}`}
-              className={`w-full rounded-lg border bg-card p-2.5 pr-10 text-sm text-foreground shadow-sm transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 ${
-                hasError ? "border-destructive" : "border-border"
-              }`}
-              placeholder={`${itemLabel} ${index + 1}`}
-              required={index < minFields}
-              onBlur={(event) => onBlur(event.target.value, name)}
-              defaultValue={field.defaultValue}
-            />
-            {fields.length > minFields && (
-              <button
-                type="button"
-                onClick={() => removeField(field.id)}
-                aria-label={`Remove ${itemLabel.toLowerCase()} ${index + 1}`}
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 text-muted-foreground transition hover:bg-muted hover:text-destructive"
-              >
-                <X size={16} />
-              </button>
+          <div key={field.id} className="flex items-center gap-1">
+            <div className="relative flex-1">
+              <input
+                name={name}
+                type="text"
+                aria-label={`${itemLabel} ${index + 1}`}
+                className={`w-full rounded-lg border bg-card p-2.5 pr-10 text-sm text-foreground shadow-sm transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 ${
+                  hasError ? "border-destructive" : "border-border"
+                }`}
+                placeholder={`${itemLabel} ${index + 1}`}
+                required={index < minFields}
+                onBlur={(event) => onBlur(event.target.value, name)}
+                defaultValue={field.defaultValue}
+              />
+              {fields.length > minFields && (
+                <button
+                  type="button"
+                  onClick={() => removeField(field.id)}
+                  aria-label={`Remove ${itemLabel.toLowerCase()} ${index + 1}`}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 text-muted-foreground transition hover:bg-muted hover:text-destructive"
+                >
+                  <X size={16} />
+                </button>
+              )}
+            </div>
+
+            {reorderable && fields.length > 1 && (
+              <div className="flex flex-col">
+                <button
+                  type="button"
+                  onClick={() => moveField(index, -1)}
+                  disabled={index === 0}
+                  aria-label={`Move ${itemLabel.toLowerCase()} ${index + 1} up`}
+                  className="rounded-full p-0.5 text-muted-foreground transition hover:bg-muted hover:text-primary disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-muted-foreground"
+                >
+                  <ChevronUp size={16} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => moveField(index, 1)}
+                  disabled={index === fields.length - 1}
+                  aria-label={`Move ${itemLabel.toLowerCase()} ${index + 1} down`}
+                  className="rounded-full p-0.5 text-muted-foreground transition hover:bg-muted hover:text-primary disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-muted-foreground"
+                >
+                  <ChevronDown size={16} />
+                </button>
+              </div>
             )}
           </div>
         ))}
