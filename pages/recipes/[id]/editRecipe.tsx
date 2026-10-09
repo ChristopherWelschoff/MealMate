@@ -1,3 +1,4 @@
+import PageHeader from "@/components/PageHeader";
 import { mutate } from "swr";
 import { useRouter } from "next/router";
 import RecipeForm from "@/components/Form";
@@ -69,12 +70,7 @@ export default function UpdateRecipe({
 
   return (
     <>
-      <div className="mb-4 text-center">
-        <h1 className="font-logo text-4xl text-primary">Edit Recipe</h1>
-        <p className="mt-1 text-xs uppercase tracking-[0.25em] text-muted-foreground">
-          Update your dish
-        </p>
-      </div>
+      <PageHeader header="Edit Recipe" subheader="Update your dish" />
 
       <RecipeForm
         onSubmit={handleUpdate}

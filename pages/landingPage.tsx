@@ -1,3 +1,4 @@
+import PageHeader from "@/components/PageHeader";
 import RecipeList from "@/components/RecipeList";
 import type { Category, Recipe } from "@/types";
 import { AlertDestructive, Spinner } from "@/components/StateMessages";
@@ -33,12 +34,7 @@ export default function LandingPage({
 
   return (
     <>
-      <header className="mb-4 mt-2 text-center">
-        <h1 className="font-logo text-4xl text-primary">Recipes</h1>
-        <p className="mt-1 text-xs uppercase tracking-[0.25em] text-muted-foreground">
-          Find your next favorite
-        </p>
-      </header>
+      <PageHeader header="Recipes" subheader="Find your next favorite" />
       <RecipeList categories={categories} recipes={recipes} />
     </>
   );

@@ -1,3 +1,4 @@
+import PageHeader from "@/components/PageHeader";
 import useSWR from "swr";
 import type { Recipe } from "@/types";
 import { Spinner } from "@/components/StateMessages";
@@ -30,12 +31,7 @@ export default function AdminPage() {
 
   return (
     <div className="mx-auto w-[95%] max-w-md">
-      <div className="mb-4 text-center">
-        <h1 className="font-logo text-4xl text-primary">Admin</h1>
-        <p className="mt-1 text-xs uppercase tracking-[0.25em] text-muted-foreground">
-          Pending recipes
-        </p>
-      </div>
+      <PageHeader header="Admin" subheader="Pending recipes" />
 
       <ul className="flex flex-col gap-6">
         {pendingRecipes?.map((recipe) => (
