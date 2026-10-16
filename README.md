@@ -1,4 +1,4 @@
-# Meal Mate
+# Meal Mate - Web-Development Bootcamp Capstone Project
 
 Meal Mate is a recipe app for discovering, creating and saving meals. Browse recipes from the community, add your own, and get nutrition values estimated automatically.
 
